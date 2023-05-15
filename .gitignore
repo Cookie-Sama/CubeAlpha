@@ -14,6 +14,8 @@ Build/
 *.VC.opendb
 
 # Visual Studio
+.vscode
+.vs
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
@@ -24,6 +26,7 @@ Build/
 *.ilk
 *.opendb
 *.manifest
+*.ipch
 
 # macOS
 .DS_Store
