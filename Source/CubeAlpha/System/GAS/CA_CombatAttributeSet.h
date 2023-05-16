@@ -46,5 +46,12 @@ public:
 	UFUNCTION()
 	virtual void OnRep_MagicalResistance(const FGameplayAttributeData& OldMagicalResistance);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Defense", ReplicatedUsing = OnRep_Defense)
+		FGameplayAttributeData Defense;
+	ATTRIBUTE_ACCESSORS(UCA_CombatAttributeSet, Defense)
+
+	UFUNCTION()
+	virtual void OnRep_Defense(const FGameplayAttributeData& OldDefense);
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

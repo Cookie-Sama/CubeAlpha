@@ -21,6 +21,11 @@ void UCA_CombatAttributeSet::OnRep_MagicalResistance(const FGameplayAttributeDat
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UCA_CombatAttributeSet, MagicalResistance, OldMagicalResistance);
 }
 
+void UCA_CombatAttributeSet::OnRep_Defense(const FGameplayAttributeData& OldDefense)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UCA_CombatAttributeSet, Defense, OldDefense);
+}
+
 void UCA_CombatAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -29,4 +34,5 @@ void UCA_CombatAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME_CONDITION_NOTIFY(UCA_CombatAttributeSet, MagicalDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCA_CombatAttributeSet, PhysicalResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCA_CombatAttributeSet, MagicalResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UCA_CombatAttributeSet, Defense, COND_None, REPNOTIFY_Always);
 }
