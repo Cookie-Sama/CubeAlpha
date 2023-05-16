@@ -6,5 +6,5 @@ void UCA_AssetManager::StartInitialLoading()
 	UAbilitySystemGlobals::Get().InitGlobalData();
 
 	//Message de log au lancement pour verif le bon fonctionnement
-	UE_LOG(LogTemp, Warning, TEXT("DA ASSET Manager OK"));
+	UE_LOG(LogTemp, Warning, TEXT("Cube Alpha Asset Manager OK"));
 }
