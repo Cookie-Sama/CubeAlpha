@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
-#include "CA_BaseAttributeSet.generated.h"
+#include "CA_RageAttributeSet.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CUBEALPHA_API UCA_BaseAttributeSet : public UAttributeSet
+class CUBEALPHA_API UCA_RageAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 	
