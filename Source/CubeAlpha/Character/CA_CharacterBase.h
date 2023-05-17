@@ -19,6 +19,7 @@ public:
 	// Sets default values for this character's properties
 	ACA_CharacterBase();
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

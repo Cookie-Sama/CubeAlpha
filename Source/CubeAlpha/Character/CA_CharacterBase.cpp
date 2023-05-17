@@ -8,6 +8,11 @@ ACA_CharacterBase::ACA_CharacterBase()
 
 }
 
+UAbilitySystemComponent* ACA_CharacterBase::GetAbilitySystemComponent() const
+{
+	return nullptr;
+}
+
 // Called when the game starts or when spawned
 void ACA_CharacterBase::BeginPlay()
 {
