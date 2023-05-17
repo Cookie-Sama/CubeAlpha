@@ -1,4 +1,4 @@
-#include "System/GAS/CA_HealthAttributeSet.h"
+#include "CA_HealthAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 
 void UCA_HealthAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)

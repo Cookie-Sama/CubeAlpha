@@ -1,4 +1,4 @@
-#include "System/GAS/CA_RPGStatsAttributeSet.h"
+#include "CA_RPGStatsAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 
 void UCA_RPGStatsAttributeSet::OnRep_BaseVitality(const FGameplayAttributeData& OldBaseVitality)

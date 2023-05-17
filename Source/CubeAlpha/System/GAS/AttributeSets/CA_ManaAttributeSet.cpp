@@ -1,4 +1,4 @@
-#include "System/GAS/CA_ManaAttributeSet.h"
+#include "CA_ManaAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 
 void UCA_ManaAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana)

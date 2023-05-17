@@ -1,4 +1,4 @@
-#include "System/GAS/CA_ExperienceAttributeSet.h"
+#include "CA_ExperienceAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 
 void UCA_ExperienceAttributeSet::OnRep_Experience(const FGameplayAttributeData& OldExperience)

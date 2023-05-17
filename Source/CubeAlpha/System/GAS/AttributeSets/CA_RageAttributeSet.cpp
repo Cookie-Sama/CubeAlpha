@@ -1,4 +1,4 @@
-#include "System/GAS/CA_RageAttributeSet.h"
+#include "CA_RageAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 
 void UCA_RageAttributeSet::OnRep_Rage(const FGameplayAttributeData& OldRage)

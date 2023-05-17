@@ -1,4 +1,4 @@
-#include "System/GAS/CA_CombatAttributeSet.h"
+#include "CA_CombatAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 
 void UCA_CombatAttributeSet::OnRep_PhysicalDamage(const FGameplayAttributeData& OldPhysicalDamage)

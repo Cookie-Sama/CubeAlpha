@@ -20,6 +20,7 @@ public class CubeAlpha : ModuleRules
             "CubeAlpha/System/GAS",
             "CubeAlpha/System/GAS/NPC",
             "CubeAlpha/System/GAS/Player",
+            "CubeAlpha/System/GAS/AttributeSets",
             "CubeAlpha/System/IA",
             "CubeAlpha/World",
             "CubeAlpha/World/Landscape",

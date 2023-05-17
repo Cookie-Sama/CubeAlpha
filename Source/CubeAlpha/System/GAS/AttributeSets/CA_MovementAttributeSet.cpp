@@ -1,4 +1,4 @@
-#include "System/GAS/CA_MovementAttributeSet.h"
+#include "CA_MovementAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 void UCA_MovementAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed)
 {
