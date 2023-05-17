@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -24,9 +22,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	virtual void ApplyDamage(float Damage, DamageType Type);
-	float CalculateMitigatedDamage(float Damage, DamageType Type);
+	virtual void ApplyDamage(float Damage, CA_DamageType Type);
+	float CalculateMitigatedDamage(float Damage, CA_DamageType Type);
 
 #pragma region AttributeSet
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
@@ -48,6 +45,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 #pragma region AttributeSetGetterSetters
 	float GetPhysicalDamage() const;
 	void SetPhysicalDamage(const float &NewPhysicalDamage) const;
@@ -56,21 +54,57 @@ public:
 	void SetMagicalDamage(const float &NewMagicalDamage) const;
 
 	float GetPhysicalResistance() const;
-	void SetPhysicalResistance(const float& NewPhysicalResistance) const;
+	void SetPhysicalResistance(const float &NewPhysicalResistance) const;
 
 	float GetMagicalResistance() const;
-	void SetMagicalResistance(const float& NewMagicalResistance) const;
+	void SetMagicalResistance(const float &NewMagicalResistance) const;
 
 	float GetDefense() const;
-	void SetDefense(const float& NewDefense) const;
+	void SetDefense(const float &NewDefense) const;
 
 	float GetHealth() const;
-	void SetHealth(const float& NewHealth) const;
+	void SetHealth(const float &NewHealth) const;
 
 	float GetMaxHealth() const;
-	void SetMaxHealth(const float& NewMaxHealth) const;
+	void SetMaxHealth(const float &NewMaxHealth) const;
 
 	float GetHealthRegen() const;
-	void SetHealthRegen(const float& NewHealthRegen) const;
+	void SetHealthRegen(const float &NewHealthRegen) const;
+
+	float GetMoveSpeed() const;
+	void SetMoveSpeed(const float& NewMoveSpeed) const;
+
+	float GetJumpHeight() const;
+	void SetJumpHeight(const float& NewJumpHeight) const;
+
+	float GetBaseVitality() const;
+	void SetBaseVitality(const float& NewBaseVitality) const;
+
+	float GetVitality() const;
+	void SetVitality(const float& NewVitality) const;
+
+	float GetBaseStrength() const;
+	void SetBaseStrength(const float& NewBaseStrength) const;
+
+	float GetStrength() const;
+	void SetStrength(const float& NewStrength) const;
+
+	float GetBaseIntelligence() const;
+	void SetBaseIntelligence(const float& NewBaseIntelligence) const;
+
+	float GetIntelligence() const;
+	void SetIntelligence(const float& NewIntelligence) const;
+
+	float GetBaseAgility() const;
+	void SetBaseAgility(const float& NewBaseAgility) const;
+
+	float GetAgility() const;
+	void SetAgility(const float& NewAgility) const;
+
+	float GetBaseEndurance() const;
+	void SetBaseEndurance(const float& NewBaseEndurance) const;
+
+	float GetEndurance() const;
+	void SetEndurance(const float& NewEndurance) const;
 #pragma endregion
 };

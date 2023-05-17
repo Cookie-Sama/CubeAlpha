@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Character/CA_CharacterBase.h"
 
 // Sets default values
@@ -18,13 +15,28 @@ void ACA_CharacterBase::BeginPlay()
 	
 }
 
-void ACA_CharacterBase::ApplyDamage(float Damage, DamageType Type)
+void ACA_CharacterBase::ApplyDamage(float Damage, CA_DamageType Type)
 {
+	float mitigatedDamage = CalculateMitigatedDamage(Damage, Type);
 
+	SetHealth(GetHealth() - mitigatedDamage);//TODO Death routine
 }
 
-float ACA_CharacterBase::CalculateMitigatedDamage(float Damage, DamageType Type)
+float ACA_CharacterBase::CalculateMitigatedDamage(float Damage, CA_DamageType Type)
 {
+	float mitigatedDamage = Damage - GetDefense();
+	if(Type == CA_DamageType::Physical)
+	{
+		mitigatedDamage -= mitigatedDamage * GetPhysicalResistance();
+	}
+	else
+	{
+		mitigatedDamage -= mitigatedDamage * GetMagicalResistance();
+	}
+
+	mitigatedDamage = FMath::Max(mitigatedDamage, 0.0f); //To Avoid negative damage
+
+	return mitigatedDamage;
 }
 
 // Called every frame
@@ -119,4 +131,124 @@ float ACA_CharacterBase::GetHealthRegen() const
 void ACA_CharacterBase::SetHealthRegen(const float& NewHealthRegen) const
 {
 	HealthAttributeSet->SetHealthRegen(NewHealthRegen);
+}
+
+float ACA_CharacterBase::GetMoveSpeed() const
+{
+	return MovementAttributeSet->GetMoveSpeed();
+}
+
+void ACA_CharacterBase::SetMoveSpeed(const float& NewMoveSpeed) const
+{
+	MovementAttributeSet->SetMoveSpeed(NewMoveSpeed);
+}
+
+float ACA_CharacterBase::GetJumpHeight() const
+{
+	return MovementAttributeSet->GetJumpHeight();
+}
+
+void ACA_CharacterBase::SetJumpHeight(const float& NewJumpHeight) const
+{
+	MovementAttributeSet->SetJumpHeight(NewJumpHeight);
+}
+
+float ACA_CharacterBase::GetBaseVitality() const
+{
+	return RPGStatsAttributeSet->GetBaseVitality();
+}
+
+void ACA_CharacterBase::SetBaseVitality(const float& NewBaseVitality) const
+{
+	RPGStatsAttributeSet->SetBaseVitality(NewBaseVitality);
+}
+
+float ACA_CharacterBase::GetVitality() const
+{
+	return RPGStatsAttributeSet->GetVitality();
+}
+
+void ACA_CharacterBase::SetVitality(const float& NewVitality) const
+{
+	RPGStatsAttributeSet->SetVitality(NewVitality);
+}
+
+float ACA_CharacterBase::GetBaseStrength() const
+{
+	return RPGStatsAttributeSet->GetBaseStrength();
+}
+
+void ACA_CharacterBase::SetBaseStrength(const float& NewBaseStrength) const
+{
+	RPGStatsAttributeSet->SetBaseStrength(NewBaseStrength);
+}
+
+float ACA_CharacterBase::GetStrength() const
+{
+	return RPGStatsAttributeSet->GetStrength();
+}
+
+void ACA_CharacterBase::SetStrength(const float& NewStrength) const
+{
+	RPGStatsAttributeSet->SetStrength(NewStrength);
+}
+
+float ACA_CharacterBase::GetBaseIntelligence() const
+{
+	return RPGStatsAttributeSet->GetBaseIntelligence();
+}
+
+void ACA_CharacterBase::SetBaseIntelligence(const float& NewBaseIntelligence) const
+{
+	RPGStatsAttributeSet->SetBaseIntelligence(NewBaseIntelligence);
+}
+
+float ACA_CharacterBase::GetIntelligence() const
+{
+	return RPGStatsAttributeSet->GetIntelligence();
+}
+
+void ACA_CharacterBase::SetIntelligence(const float& NewIntelligence) const
+{
+	RPGStatsAttributeSet->SetIntelligence(NewIntelligence);
+}
+
+float ACA_CharacterBase::GetBaseAgility() const
+{
+	return RPGStatsAttributeSet->GetBaseAgility();
+}
+
+void ACA_CharacterBase::SetBaseAgility(const float& NewBaseAgility) const
+{
+	RPGStatsAttributeSet->SetBaseAgility(NewBaseAgility);
+}
+
+float ACA_CharacterBase::GetAgility() const
+{
+	return RPGStatsAttributeSet->GetAgility();
+}
+
+void ACA_CharacterBase::SetAgility(const float& NewAgility) const
+{
+	RPGStatsAttributeSet->SetAgility(NewAgility);
+}
+
+float ACA_CharacterBase::GetBaseEndurance() const
+{
+	return RPGStatsAttributeSet->GetBaseEndurance();
+}
+
+void ACA_CharacterBase::SetBaseEndurance(const float& NewBaseEndurance) const
+{
+	RPGStatsAttributeSet->SetBaseEndurance(NewBaseEndurance);
+}
+
+float ACA_CharacterBase::GetEndurance() const
+{
+	return RPGStatsAttributeSet->GetEndurance();
+}
+
+void ACA_CharacterBase::SetEndurance(const float& NewEndurance) const
+{
+	RPGStatsAttributeSet->SetEndurance(NewEndurance);
 }
