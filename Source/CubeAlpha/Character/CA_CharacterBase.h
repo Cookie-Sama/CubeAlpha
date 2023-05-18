@@ -24,7 +24,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void ApplyDamage(float Damage, CA_DamageType Type);
-	float CalculateMitigatedDamage(float Damage, CA_DamageType Type);
+	float CalculateMitigatedDamage(float Damage, CA_DamageType Type) const;
 
 #pragma region AttributeSet
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
@@ -107,5 +107,10 @@ public:
 
 	float GetEndurance() const;
 	void SetEndurance(const float& NewEndurance) const;
+
+	float GetCharacterLevel() const;
+	void SetCharacterLevel(const float& NewLevel) const;
+
+	void LevelUp() const;
 #pragma endregion
 };

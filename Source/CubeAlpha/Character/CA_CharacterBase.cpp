@@ -22,12 +22,12 @@ void ACA_CharacterBase::BeginPlay()
 
 void ACA_CharacterBase::ApplyDamage(float Damage, CA_DamageType Type)
 {
-	float mitigatedDamage = CalculateMitigatedDamage(Damage, Type);
+	const float mitigatedDamage = CalculateMitigatedDamage(Damage, Type);
 
 	SetHealth(GetHealth() - mitigatedDamage);//TODO Death routine
 }
 
-float ACA_CharacterBase::CalculateMitigatedDamage(float Damage, CA_DamageType Type)
+float ACA_CharacterBase::CalculateMitigatedDamage(float Damage, CA_DamageType Type) const
 {
 	float mitigatedDamage = Damage - GetDefense();
 	if(Type == CA_DamageType::Physical)
@@ -256,4 +256,21 @@ float ACA_CharacterBase::GetEndurance() const
 void ACA_CharacterBase::SetEndurance(const float& NewEndurance) const
 {
 	RPGStatsAttributeSet->SetEndurance(NewEndurance);
+}
+
+float ACA_CharacterBase::GetCharacterLevel() const
+{
+	return RPGStatsAttributeSet->GetLevel();
+}
+
+void ACA_CharacterBase::SetCharacterLevel(const float& NewLevel) const
+{
+	RPGStatsAttributeSet->SetLevel(NewLevel);
+}
+
+void ACA_CharacterBase::LevelUp() const
+{
+	float Level = GetCharacterLevel()+1;
+	SetCharacterLevel(Level);
+	//TODO Update Stats
 }

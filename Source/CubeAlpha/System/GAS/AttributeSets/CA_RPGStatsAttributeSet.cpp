@@ -51,6 +51,11 @@ void UCA_RPGStatsAttributeSet::OnRep_Endurance(const FGameplayAttributeData& Old
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UCA_RPGStatsAttributeSet, Endurance, OldEndurance);
 }
 
+void UCA_RPGStatsAttributeSet::OnRep_Level(const FGameplayAttributeData& OldLevel)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UCA_RPGStatsAttributeSet, Level, OldLevel);
+}
+
 void UCA_RPGStatsAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -65,4 +70,5 @@ void UCA_RPGStatsAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME_CONDITION_NOTIFY(UCA_RPGStatsAttributeSet, Agility, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCA_RPGStatsAttributeSet, BaseEndurance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCA_RPGStatsAttributeSet, Endurance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UCA_RPGStatsAttributeSet, Level, COND_None, REPNOTIFY_Always);
 }

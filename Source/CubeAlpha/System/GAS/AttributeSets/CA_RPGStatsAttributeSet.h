@@ -87,5 +87,12 @@ public:
 	UFUNCTION()
 	virtual void OnRep_Endurance(const FGameplayAttributeData& OldEndurance);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Vitality", ReplicatedUsing = OnRep_Level)
+		FGameplayAttributeData Level;
+	ATTRIBUTE_ACCESSORS(UCA_RPGStatsAttributeSet, Level)
+
+		UFUNCTION()
+		virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
