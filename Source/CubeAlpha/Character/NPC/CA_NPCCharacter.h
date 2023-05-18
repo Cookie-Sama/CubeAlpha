@@ -11,5 +11,6 @@ UCLASS()
 class CUBEALPHA_API ACA_NPCCharacter : public ACA_CharacterBase
 {
 	GENERATED_BODY()
-	
+public:
+	ACA_NPCCharacter(const class FObjectInitializer& ObjectInitializer);
 };

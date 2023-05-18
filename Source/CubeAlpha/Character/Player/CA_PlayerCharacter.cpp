@@ -1,6 +1,6 @@
 #include "Character/Player/CA_PlayerCharacter.h"
 
-ACA_PlayerCharacter::ACA_PlayerCharacter()
+ACA_PlayerCharacter::ACA_PlayerCharacter(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 }
 
