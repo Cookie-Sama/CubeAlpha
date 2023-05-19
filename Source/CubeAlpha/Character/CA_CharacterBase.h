@@ -97,6 +97,9 @@ protected:
 	virtual void ApplyDamage(float Damage, CA_DamageType Type);
 	float CalculateMitigatedDamage(float Damage, CA_DamageType Type) const;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		UDataTable* StatsDataTable;
+
 #pragma region AttributeSet
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
 	UCA_CombatAttributeSet* CombatAttributeSet;

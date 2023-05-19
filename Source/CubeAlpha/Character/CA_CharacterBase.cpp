@@ -13,6 +13,10 @@ ACA_CharacterBase::ACA_CharacterBase(const class FObjectInitializer& ObjectIniti
 	bAlwaysRelevant = true;
 	DeadTag = FGameplayTag::RequestGameplayTag("State.Dead");
 	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag("State.RemoveOnDeath");
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::StunTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.SpeedDowned")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedDownTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Buff.SpeedBoosted")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedBoostTagChanged);
 }
 
 bool ACA_CharacterBase::IsAlive() const
@@ -190,7 +194,11 @@ void ACA_CharacterBase::ApplyDamage(float Damage, CA_DamageType Type)
 {
 	const float mitigatedDamage = CalculateMitigatedDamage(Damage, Type);
 
-	SetHealth(GetHealth() - mitigatedDamage);//TODO Death routine
+	SetHealth(GetHealth() - mitigatedDamage);
+	if(GetHealth()<=0)
+	{
+		Die();
+	}
 }
 
 float ACA_CharacterBase::CalculateMitigatedDamage(float Damage, CA_DamageType Type) const
@@ -436,7 +444,12 @@ void ACA_CharacterBase::SetCharacterLevel(const float& NewLevel) const
 
 void ACA_CharacterBase::LevelUp() const
 {
-	float Level = GetCharacterLevel()+1;
-	SetCharacterLevel(Level);
-	//TODO Update Stats
+	if (GetCharacterLevel() < 10) {
+		const float NewLevel = GetCharacterLevel() + 1;
+		SetCharacterLevel(NewLevel);
+		//TODO Update Stats
+		FString ContextString;
+		FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), NewLevel)), ContextString);
+		if(StatsRow){}
+	}
 }
