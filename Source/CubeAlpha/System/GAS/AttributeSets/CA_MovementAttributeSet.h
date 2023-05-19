@@ -31,5 +31,20 @@ public:
 	UFUNCTION()
 	virtual void OnRep_JumpHeight(const FGameplayAttributeData& OldJumpHeight);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_Stamina)
+		FGameplayAttributeData Stamina;
+	ATTRIBUTE_ACCESSORS(UCA_MovementAttributeSet, Stamina)
+
+	UFUNCTION()
+	virtual void OnRep_Stamina(const FGameplayAttributeData& OldStamina);
+
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_MaxStamina)
+		FGameplayAttributeData MaxStamina;
+	ATTRIBUTE_ACCESSORS(UCA_MovementAttributeSet, MaxStamina)
+
+		UFUNCTION()
+		virtual void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina);
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

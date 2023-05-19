@@ -1,5 +1,6 @@
 #include "Character/CA_CharacterBase.h"
 #include "Components/CapsuleComponent.h"
+#include "CubeAlphaStatsRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -13,6 +14,10 @@ ACA_CharacterBase::ACA_CharacterBase(const class FObjectInitializer& ObjectIniti
 	bAlwaysRelevant = true;
 	DeadTag = FGameplayTag::RequestGameplayTag("State.Dead");
 	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag("State.RemoveOnDeath");
+
+	AbilitySystemComponent = CreateDefaultSubobject<UCA_AbilitySystemComponent>("AbilitySystemComp");
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::StunTagChanged);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.SpeedDowned")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedDownTagChanged);
@@ -332,6 +337,26 @@ void ACA_CharacterBase::SetJumpHeight(const float& NewJumpHeight) const
 	MovementAttributeSet->SetJumpHeight(NewJumpHeight);
 }
 
+float ACA_CharacterBase::GetStamina() const
+{
+	return MovementAttributeSet->GetStamina();
+}
+
+void ACA_CharacterBase::SetStamina(const float& NewStamina) const
+{
+	MovementAttributeSet->SetStamina(NewStamina);
+}
+
+float ACA_CharacterBase::GetMaxStamina() const
+{
+	return MovementAttributeSet->GetMaxStamina();
+}
+
+void ACA_CharacterBase::SetMaxStamina(const float& NewMaxStamina) const
+{
+	MovementAttributeSet->SetMaxStamina(NewMaxStamina);
+}
+
 float ACA_CharacterBase::GetBaseVitality() const
 {
 	return RPGStatsAttributeSet->GetBaseVitality();
@@ -447,9 +472,18 @@ void ACA_CharacterBase::LevelUp() const
 	if (GetCharacterLevel() < 10) {
 		const float NewLevel = GetCharacterLevel() + 1;
 		SetCharacterLevel(NewLevel);
-		//TODO Update Stats
 		FString ContextString;
 		FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), NewLevel)), ContextString);
-		if(StatsRow){}
+		if(StatsRow)
+		{
+			SetBaseVitality(StatsRow->Vitality);
+			SetBaseStrength(StatsRow->Strength);
+			SetBaseIntelligence(StatsRow->Intelligence);
+			SetBaseAgility(StatsRow->Agility);
+			SetBaseEndurance(StatsRow->Endurance);
+			//TODO Update stats
+		}
+		SetHealth(GetMaxHealth());
+		SetStamina(GetMaxStamina());
 	}
 }

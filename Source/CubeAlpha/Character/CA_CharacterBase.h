@@ -163,6 +163,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	void SetJumpHeight(const float& NewJumpHeight) const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+	float GetStamina()const;
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+	void SetStamina(const float& NewStamina) const;
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+	float GetMaxStamina()const;
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+	void SetMaxStamina(const float& NewMaxStamina) const;
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetBaseVitality() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	void SetBaseVitality(const float& NewBaseVitality) const;
