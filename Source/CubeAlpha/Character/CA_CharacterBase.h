@@ -6,11 +6,6 @@
 #include "CubeAlpha.h"
 #include "CA_GameplayAbility.h"
 #include "GameplayTagContainer.h"
-#include "CA_CombatAttributeSet.h"
-#include "CA_HealthAttributeSet.h"
-#include "CA_MovementAttributeSet.h"
-#include "CA_RPGStatsAttributeSet.h"
-#include "CA_AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CA_CharacterBase.generated.h"
 
@@ -92,7 +87,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UCA_AbilitySystemComponent* AbilitySystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
+	TWeakObjectPtr<class UCA_AbilitySystemComponent> AbilitySystemComponent;
 
 	virtual void ApplyDamage(float Damage, CA_DamageType Type);
 	float CalculateMitigatedDamage(float Damage, CA_DamageType Type) const;
@@ -102,16 +98,16 @@ protected:
 
 #pragma region AttributeSet
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	UCA_CombatAttributeSet* CombatAttributeSet;
+	TWeakObjectPtr<class UCA_CombatAttributeSet> CombatAttributeSet;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	UCA_HealthAttributeSet* HealthAttributeSet;
+	TWeakObjectPtr<class UCA_HealthAttributeSet> HealthAttributeSet;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	UCA_MovementAttributeSet* MovementAttributeSet;
+	TWeakObjectPtr<class UCA_MovementAttributeSet> MovementAttributeSet;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	UCA_RPGStatsAttributeSet* RPGStatsAttributeSet;
+	TWeakObjectPtr<class UCA_RPGStatsAttributeSet> RPGStatsAttributeSet;
 #pragma endregion
 
 public:	
@@ -215,7 +211,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	void SetCharacterLevel(const float& NewLevel) const;
 
-	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
-	void LevelUp() const;
 #pragma endregion
+
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+		void LevelUp() const;
 };

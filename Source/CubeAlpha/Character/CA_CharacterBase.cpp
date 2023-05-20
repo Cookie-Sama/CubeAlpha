@@ -1,5 +1,10 @@
 #include "Character/CA_CharacterBase.h"
 #include "Components/CapsuleComponent.h"
+#include "CA_AbilitySystemComponent.h"
+#include "CA_CombatAttributeSet.h"
+#include "CA_HealthAttributeSet.h"
+#include "CA_MovementAttributeSet.h"
+#include "CA_RPGStatsAttributeSet.h"
 #include "CubeAlphaStatsRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -15,13 +20,10 @@ ACA_CharacterBase::ACA_CharacterBase(const class FObjectInitializer& ObjectIniti
 	DeadTag = FGameplayTag::RequestGameplayTag("State.Dead");
 	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag("State.RemoveOnDeath");
 
-	AbilitySystemComponent = CreateDefaultSubobject<UCA_AbilitySystemComponent>("AbilitySystemComp");
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-
-	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::StunTagChanged);
+	//TODO FIXME figure how to move it to PlayerState
+	/*AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::StunTagChanged);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.SpeedDowned")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedDownTagChanged);
-	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Buff.SpeedBoosted")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedBoostTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Buff.SpeedBoosted")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedBoostTagChanged);*/
 }
 
 bool ACA_CharacterBase::IsAlive() const
@@ -36,7 +38,7 @@ int32 ACA_CharacterBase::GetAbilityLevel(CA_AbilityID AbilityID) const
 
 void ACA_CharacterBase::RemoveCharacterAbilities()
 {
-	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || !AbilitySystemComponent->CharacterAbilitiesGiven) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->CharacterAbilitiesGiven) {
 		return;
 	}
 	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
@@ -64,7 +66,7 @@ void ACA_CharacterBase::Die()
 
 	OnCharacterDied.Broadcast(this);
 
-	if(IsValid(AbilitySystemComponent))
+	if(AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->CancelAbilities();
 
@@ -90,12 +92,12 @@ void ACA_CharacterBase::FinishDying()
 
 UAbilitySystemComponent* ACA_CharacterBase::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return AbilitySystemComponent.Get();
 }
 
 void ACA_CharacterBase::AddCharacterAbilities()
 {
-	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->CharacterAbilitiesGiven) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->CharacterAbilitiesGiven) {
 		return;
 	}
 
@@ -109,7 +111,7 @@ void ACA_CharacterBase::AddCharacterAbilities()
 
 void ACA_CharacterBase::InitializeAttributes()
 {
-	if (AbilitySystemComponent && DefaultAttributes)
+	if (AbilitySystemComponent.IsValid() && DefaultAttributes)
 	{
 		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 		EffectContext.AddSourceObject(this);
@@ -133,7 +135,7 @@ void ACA_CharacterBase::InitializeAttributes()
 
 void ACA_CharacterBase::AddStartupEffects()
 {
-	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->StartupEffectsApplied) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->StartupEffectsApplied) {
 		return;
 	}
 
@@ -145,7 +147,7 @@ void ACA_CharacterBase::AddStartupEffects()
 		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, RPGStatsAttributeSet->GetLevel(), EffectContext);
 		if (NewHandle.IsValid())
 		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
 		}
 	}
 
@@ -181,6 +183,13 @@ void ACA_CharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 New
 	if (NewCount > 0)
 	{
 		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
+		FGameplayTagContainer AbilityTagsToCancel;
+		AbilityTagsToCancel.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
+
+		FGameplayTagContainer AbilityTagsToIgnore;
+		AbilityTagsToIgnore.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.NotCanceledByStun")));
+
+		AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel, &AbilityTagsToIgnore);
 	}
 	else if (NewCount == 0)
 	{
@@ -237,235 +246,352 @@ void ACA_CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 }
 
+#pragma region AttributeSetGetterSetters
 float ACA_CharacterBase::GetPhysicalDamage() const
 {
-	return CombatAttributeSet->GetPhysicalDamage();
+	if (CombatAttributeSet.IsValid()) {
+		return CombatAttributeSet->GetPhysicalDamage();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetPhysicalDamage(const float &NewPhysicalDamage) const
 {
-	CombatAttributeSet->SetPhysicalDamage(NewPhysicalDamage);
+	if (CombatAttributeSet.IsValid()) {
+		CombatAttributeSet->SetPhysicalDamage(NewPhysicalDamage);
+	}
 }
 
 float ACA_CharacterBase::GetMagicalDamage() const
 {
-	return CombatAttributeSet->GetMagicalDamage();
+	if (CombatAttributeSet.IsValid()) {
+		return CombatAttributeSet->GetMagicalDamage();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetMagicalDamage(const float& NewMagicalDamage) const
 {
-	CombatAttributeSet->SetMagicalDamage(NewMagicalDamage);
+	if (CombatAttributeSet.IsValid()) {
+		CombatAttributeSet->SetMagicalDamage(NewMagicalDamage);
+	}
 }
 
 float ACA_CharacterBase::GetPhysicalResistance() const
 {
-	return CombatAttributeSet->GetPhysicalResistance();
+	if (CombatAttributeSet.IsValid()) {
+		return CombatAttributeSet->GetPhysicalResistance();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetPhysicalResistance(const float& NewPhysicalResistance) const
 {
-	CombatAttributeSet->SetPhysicalResistance(NewPhysicalResistance);
+	if (CombatAttributeSet.IsValid()) {
+		CombatAttributeSet->SetPhysicalResistance(NewPhysicalResistance);
+	}
 }
 
 float ACA_CharacterBase::GetMagicalResistance() const
 {
-	return CombatAttributeSet->GetMagicalResistance();
+	if (CombatAttributeSet.IsValid()) {
+		return CombatAttributeSet->GetMagicalResistance();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetMagicalResistance(const float& NewMagicalResistance) const
 {
-	CombatAttributeSet->SetMagicalResistance(NewMagicalResistance);
+	if (CombatAttributeSet.IsValid()) {
+		CombatAttributeSet->SetMagicalResistance(NewMagicalResistance);
+	}
 }
 
 float ACA_CharacterBase::GetDefense() const
 {
-	return CombatAttributeSet->GetDefense();
+	if (CombatAttributeSet.IsValid()) {
+		return CombatAttributeSet->GetDefense();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetDefense(const float& NewDefense) const
 {
-	CombatAttributeSet->SetDefense(NewDefense);
+	if (CombatAttributeSet.IsValid()) {
+		CombatAttributeSet->SetDefense(NewDefense);
+	}
 }
 
 float ACA_CharacterBase::GetHealth() const
 {
-	return HealthAttributeSet->GetHealth();
+	if (HealthAttributeSet.IsValid()) {
+		return HealthAttributeSet->GetHealth();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetHealth(const float& NewHealth) const
 {
-	HealthAttributeSet->SetHealth(NewHealth);
+	if (HealthAttributeSet.IsValid()) {
+		HealthAttributeSet->SetHealth(NewHealth);
+	}
 }
 
 float ACA_CharacterBase::GetMaxHealth() const
 {
-	return HealthAttributeSet->GetMaxHealth();
+	if (HealthAttributeSet.IsValid()) {
+		return HealthAttributeSet->GetMaxHealth();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetMaxHealth(const float& NewMaxHealth) const
 {
-	HealthAttributeSet->SetMaxHealth(NewMaxHealth);
+	if (HealthAttributeSet.IsValid()) {
+		HealthAttributeSet->SetMaxHealth(NewMaxHealth);
+	}
 }
 
 float ACA_CharacterBase::GetHealthRegen() const
 {
-	return HealthAttributeSet->GetHealthRegen();
+	if (HealthAttributeSet.IsValid()) {
+		return HealthAttributeSet->GetHealthRegen();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetHealthRegen(const float& NewHealthRegen) const
 {
-	HealthAttributeSet->SetHealthRegen(NewHealthRegen);
+	if (HealthAttributeSet.IsValid()) {
+		HealthAttributeSet->SetHealthRegen(NewHealthRegen);
+	}
 }
 
 float ACA_CharacterBase::GetMoveSpeed() const
 {
-	return MovementAttributeSet->GetMoveSpeed();
+	if (MovementAttributeSet.IsValid()) {
+		return MovementAttributeSet->GetMoveSpeed();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetMoveSpeed(const float& NewMoveSpeed) const
 {
-	MovementAttributeSet->SetMoveSpeed(NewMoveSpeed);
+	if (MovementAttributeSet.IsValid()) {
+		MovementAttributeSet->SetMoveSpeed(NewMoveSpeed);
+	}
 }
 
 float ACA_CharacterBase::GetJumpHeight() const
 {
-	return MovementAttributeSet->GetJumpHeight();
+	if (MovementAttributeSet.IsValid()) {
+		return MovementAttributeSet->GetJumpHeight();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetJumpHeight(const float& NewJumpHeight) const
 {
-	MovementAttributeSet->SetJumpHeight(NewJumpHeight);
+	if (MovementAttributeSet.IsValid()) {
+		MovementAttributeSet->SetJumpHeight(NewJumpHeight);
+	}
 }
 
 float ACA_CharacterBase::GetStamina() const
 {
-	return MovementAttributeSet->GetStamina();
+	if (MovementAttributeSet.IsValid()) {
+		return MovementAttributeSet->GetStamina();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetStamina(const float& NewStamina) const
 {
-	MovementAttributeSet->SetStamina(NewStamina);
+	if (MovementAttributeSet.IsValid()) {
+		MovementAttributeSet->SetStamina(NewStamina);
+	}
 }
 
 float ACA_CharacterBase::GetMaxStamina() const
 {
-	return MovementAttributeSet->GetMaxStamina();
+	if (MovementAttributeSet.IsValid()) {
+		return MovementAttributeSet->GetMaxStamina();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetMaxStamina(const float& NewMaxStamina) const
 {
-	MovementAttributeSet->SetMaxStamina(NewMaxStamina);
+	if (MovementAttributeSet.IsValid()) {
+		MovementAttributeSet->SetMaxStamina(NewMaxStamina);
+	}
 }
 
 float ACA_CharacterBase::GetBaseVitality() const
 {
-	return RPGStatsAttributeSet->GetBaseVitality();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetBaseVitality();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetBaseVitality(const float& NewBaseVitality) const
 {
-	RPGStatsAttributeSet->SetBaseVitality(NewBaseVitality);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetBaseVitality(NewBaseVitality);
+	}
 }
 
 float ACA_CharacterBase::GetVitality() const
 {
-	return RPGStatsAttributeSet->GetVitality();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetVitality();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetVitality(const float& NewVitality) const
 {
-	RPGStatsAttributeSet->SetVitality(NewVitality);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetVitality(NewVitality);
+	}
 }
 
 float ACA_CharacterBase::GetBaseStrength() const
 {
-	return RPGStatsAttributeSet->GetBaseStrength();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetBaseStrength();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetBaseStrength(const float& NewBaseStrength) const
 {
-	RPGStatsAttributeSet->SetBaseStrength(NewBaseStrength);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetBaseStrength(NewBaseStrength);
+	}
 }
 
 float ACA_CharacterBase::GetStrength() const
 {
-	return RPGStatsAttributeSet->GetStrength();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetStrength();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetStrength(const float& NewStrength) const
 {
-	RPGStatsAttributeSet->SetStrength(NewStrength);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetStrength(NewStrength);
+	}
 }
 
 float ACA_CharacterBase::GetBaseIntelligence() const
 {
-	return RPGStatsAttributeSet->GetBaseIntelligence();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetBaseIntelligence();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetBaseIntelligence(const float& NewBaseIntelligence) const
 {
-	RPGStatsAttributeSet->SetBaseIntelligence(NewBaseIntelligence);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetBaseIntelligence(NewBaseIntelligence);
+	}
 }
 
 float ACA_CharacterBase::GetIntelligence() const
 {
-	return RPGStatsAttributeSet->GetIntelligence();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetIntelligence();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetIntelligence(const float& NewIntelligence) const
 {
-	RPGStatsAttributeSet->SetIntelligence(NewIntelligence);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetIntelligence(NewIntelligence);
+	}
 }
 
 float ACA_CharacterBase::GetBaseAgility() const
 {
-	return RPGStatsAttributeSet->GetBaseAgility();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetBaseAgility();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetBaseAgility(const float& NewBaseAgility) const
 {
-	RPGStatsAttributeSet->SetBaseAgility(NewBaseAgility);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetBaseAgility(NewBaseAgility);
+	}
 }
 
 float ACA_CharacterBase::GetAgility() const
 {
-	return RPGStatsAttributeSet->GetAgility();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetAgility();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetAgility(const float& NewAgility) const
 {
-	RPGStatsAttributeSet->SetAgility(NewAgility);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetAgility(NewAgility);
+	}
 }
 
 float ACA_CharacterBase::GetBaseEndurance() const
 {
-	return RPGStatsAttributeSet->GetBaseEndurance();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetBaseEndurance();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetBaseEndurance(const float& NewBaseEndurance) const
 {
-	RPGStatsAttributeSet->SetBaseEndurance(NewBaseEndurance);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetBaseEndurance(NewBaseEndurance);
+	}
 }
 
 float ACA_CharacterBase::GetEndurance() const
 {
-	return RPGStatsAttributeSet->GetEndurance();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetEndurance();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetEndurance(const float& NewEndurance) const
 {
-	RPGStatsAttributeSet->SetEndurance(NewEndurance);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetEndurance(NewEndurance);
+	}
 }
 
 float ACA_CharacterBase::GetCharacterLevel() const
 {
-	return RPGStatsAttributeSet->GetLevel();
+	if (RPGStatsAttributeSet.IsValid()) {
+		return RPGStatsAttributeSet->GetLevel();
+	}
+	return 0.0f;
 }
 
 void ACA_CharacterBase::SetCharacterLevel(const float& NewLevel) const
 {
-	RPGStatsAttributeSet->SetLevel(NewLevel);
+	if (RPGStatsAttributeSet.IsValid()) {
+		RPGStatsAttributeSet->SetLevel(NewLevel);
+	}
 }
+#pragma endregion
 
 void ACA_CharacterBase::LevelUp() const
 {
@@ -481,7 +607,7 @@ void ACA_CharacterBase::LevelUp() const
 			SetBaseIntelligence(StatsRow->Intelligence);
 			SetBaseAgility(StatsRow->Agility);
 			SetBaseEndurance(StatsRow->Endurance);
-			//TODO Update stats
+			//TODO Update real stats
 		}
 		SetHealth(GetMaxHealth());
 		SetStamina(GetMaxStamina());
