@@ -22,6 +22,7 @@ public class CubeAlpha : ModuleRules
             "CubeAlpha/System/GAS/Player",
             "CubeAlpha/System/GAS/AttributeSets",
             "CubeAlpha/System/IA",
+            "CubeAlpha/System/Player",
             "CubeAlpha/World",
             "CubeAlpha/World/Landscape",
             "CubeAlpha/World/POI",

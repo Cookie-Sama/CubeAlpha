@@ -22,3 +22,13 @@ enum class CA_AbilityID : uint8
 	Active3 UMETA(DisplayName = "Active3"),
 	Ultimate UMETA(DisplayName = "Ultimate")
 };
+
+UENUM(BlueprintType)
+enum class ERarity : uint8
+{
+	Common,
+	Uncommon,
+	Rare,
+	Epic,
+	Legendary
+};
