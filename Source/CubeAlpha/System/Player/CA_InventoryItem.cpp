@@ -30,14 +30,14 @@ void UCA_InventoryItem::SetItemType(EItemType NewType)
 	ItemType = NewType;
 }
 
-uint8 UCA_InventoryItem::GetStackSize() const
+uint8 UCA_InventoryItem::GetMaxStackSize() const
 {
-	return StackSize;
+	return MaxStackSize;
 }
 
-void UCA_InventoryItem::SetStackSize(const uint8 NewSize)
+void UCA_InventoryItem::SetMaxStackSize(const uint8 NewSize)
 {
-	StackSize = NewSize;
+	MaxStackSize = NewSize;
 }
 
 bool UCA_InventoryItem::IsValid() const

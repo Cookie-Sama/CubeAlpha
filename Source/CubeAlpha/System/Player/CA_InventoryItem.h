@@ -29,7 +29,7 @@ protected:
         EItemType ItemType;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory Item")
-        uint8 StackSize;
+        uint8 MaxStackSize;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory Item")
         uint8 CopperValue;
@@ -64,10 +64,10 @@ public:
         void SetItemType(EItemType NewType);
 
     UFUNCTION(BlueprintCallable, Category = "Inventory Item")
-        uint8 GetStackSize() const;
+        uint8 GetMaxStackSize() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory Item")
-        void SetStackSize(const uint8 NewSize);
+        void SetMaxStackSize(const uint8 NewSize);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory Item")
         bool IsValid() const;
