@@ -5,7 +5,7 @@ ACA_PlayerCharacter::ACA_PlayerCharacter(const class FObjectInitializer& ObjectI
 }
 
 #pragma region Cooldowns
-bool ACA_PlayerCharacter::GetCooldownRemainingForAbility(const FGameplayTag AbilityTag, float& OutTimeRemaining)
+bool ACA_PlayerCharacter::GetCooldownRemainingForAbility(const FGameplayTag AbilityTag, float& OutTimeRemaining) const
 {
 	FString CooldownTag = AbilityTag.ToString().Append(".OnCooldown");
 
@@ -15,7 +15,7 @@ bool ACA_PlayerCharacter::GetCooldownRemainingForAbility(const FGameplayTag Abil
 	return GetCooldownRemainingForTag(tags, OutTimeRemaining);
 }
 
-bool ACA_PlayerCharacter::GetCooldownDurationForAbility(const FGameplayTag AbilityTag, float& OutDuration)
+bool ACA_PlayerCharacter::GetCooldownDurationForAbility(const FGameplayTag AbilityTag, float& OutDuration) const
 {
 	FString CooldownTag = AbilityTag.ToString().Append(".OnCooldown");
 
@@ -25,7 +25,7 @@ bool ACA_PlayerCharacter::GetCooldownDurationForAbility(const FGameplayTag Abili
 	return GetCooldownDurationForTag(tags, OutDuration);
 }
 
-bool ACA_PlayerCharacter::GetCooldownRemainingForTag(const FGameplayTagContainer CooldownTags, float& OutTimeRemaining)
+bool ACA_PlayerCharacter::GetCooldownRemainingForTag(const FGameplayTagContainer CooldownTags, float& OutTimeRemaining) const
 {
 	if (AbilitySystemComponent.IsValid() && CooldownTags.Num() > 0)
 	{
@@ -44,7 +44,7 @@ bool ACA_PlayerCharacter::GetCooldownRemainingForTag(const FGameplayTagContainer
 	return false;
 }
 
-bool ACA_PlayerCharacter::GetCooldownDurationForTag(const FGameplayTagContainer CooldownTags, float& OutDuration)
+bool ACA_PlayerCharacter::GetCooldownDurationForTag(const FGameplayTagContainer CooldownTags, float& OutDuration) const
 {
 	if (AbilitySystemComponent.IsValid() && CooldownTags.Num() > 0)
 	{

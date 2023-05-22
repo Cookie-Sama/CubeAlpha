@@ -9,6 +9,8 @@ UCLASS()
 class CUBEALPHA_API ACA_CharacterWithEquipment : public ACA_CharacterBase
 {
 	GENERATED_BODY()
+public:
+	ACA_CharacterWithEquipment(const class FObjectInitializer& ObjectInitializer);
 
 protected:
 

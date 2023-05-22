@@ -1,5 +1,11 @@
 #include "Character/CA_CharacterWithEquipment.h"
 
+ACA_CharacterWithEquipment::ACA_CharacterWithEquipment(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+{
+	CharacterEquipment = CreateDefaultSubobject<UCA_CharacterEquipmentComponent>("Equipment");
+	UpdateAttributes();
+}
+
 EClassType ACA_CharacterWithEquipment::GetCharacterClass() const
 {
 	return CharacterClass;

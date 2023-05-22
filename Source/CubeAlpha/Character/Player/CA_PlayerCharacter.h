@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/CA_CharacterBase.h"
+#include "CA_CharacterWithEquipment.h"
 #include "CA_ExperienceAttributeSet.h"
 #include "CA_PlayerCharacter.generated.h"
 
@@ -9,7 +9,7 @@
  * 
  */
 UCLASS()
-class CUBEALPHA_API ACA_PlayerCharacter : public ACA_CharacterBase
+class CUBEALPHA_API ACA_PlayerCharacter : public ACA_CharacterWithEquipment
 {
 	GENERATED_BODY()
 public:
@@ -29,16 +29,16 @@ public:
 #pragma region Cooldowns
 
 	UFUNCTION(BlueprintCallable, meta = (DynamicOutputParam = "OutTimeRemaining"))
-		bool GetCooldownRemainingForAbility(FGameplayTag AbilityTag, float& OutTimeRemaining);
+		bool GetCooldownRemainingForAbility(FGameplayTag AbilityTag, float& OutTimeRemaining) const;
 
 	UFUNCTION(BlueprintCallable, meta = (DynamicOutputParam = "OutDuration"))
-		bool GetCooldownDurationForAbility(FGameplayTag AbilityTag, float& OutDuration);
+		bool GetCooldownDurationForAbility(FGameplayTag AbilityTag, float& OutDuration) const;
 
 	UFUNCTION(BlueprintCallable, meta = (DynamicOutputParam = "OutTimeRemaining"))
-		bool GetCooldownRemainingForTag(FGameplayTagContainer CooldownTags, float& OutTimeRemaining);
+		bool GetCooldownRemainingForTag(FGameplayTagContainer CooldownTags, float& OutTimeRemaining) const;
 
 	UFUNCTION(BlueprintCallable, meta = (DynamicOutputParam = "OutDuration"))
-		bool GetCooldownDurationForTag(FGameplayTagContainer CooldownTags, float& OutDuration);
+		bool GetCooldownDurationForTag(FGameplayTagContainer CooldownTags, float& OutDuration) const;
 
 #pragma endregion
 

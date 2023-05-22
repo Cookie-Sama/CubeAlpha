@@ -3,6 +3,7 @@
 UCA_GearItem::UCA_GearItem()
 {
 	ItemType = EItemType::Gear;
+	MaxStackSize = 1;
 }
 
 EEquipmentSlot UCA_GearItem::GetEquipmentSlot() const
