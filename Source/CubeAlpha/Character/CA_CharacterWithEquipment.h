@@ -22,6 +22,8 @@ protected:
 
 public:
 
+	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintCallable, Category = "Character")
 		EClassType GetCharacterClass() const;
 

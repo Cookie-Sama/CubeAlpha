@@ -6,6 +6,10 @@
 #include "CubeAlpha.h"
 #include "CA_GameplayAbility.h"
 #include "GameplayTagContainer.h"
+#include "CA_CombatAttributeSet.h"
+#include "CA_HealthAttributeSet.h"
+#include "CA_MovementAttributeSet.h"
+#include "CA_RPGStatsAttributeSet.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CA_CharacterBase.generated.h"
 
@@ -98,16 +102,16 @@ protected:
 
 #pragma region AttributeSet
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	TWeakObjectPtr<class UCA_CombatAttributeSet> CombatAttributeSet;
+	UCA_CombatAttributeSet* CombatAttributeSet;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	TWeakObjectPtr<class UCA_HealthAttributeSet> HealthAttributeSet;
+	UCA_HealthAttributeSet* HealthAttributeSet;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	TWeakObjectPtr<class UCA_MovementAttributeSet> MovementAttributeSet;
+	UCA_MovementAttributeSet* MovementAttributeSet;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Character|AttributeSet")
-	TWeakObjectPtr<class UCA_RPGStatsAttributeSet> RPGStatsAttributeSet;
+	UCA_RPGStatsAttributeSet* RPGStatsAttributeSet;
 #pragma endregion
 
 public:	
@@ -215,4 +219,67 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 		void LevelUp() const;
+
+protected:
+
+#pragma region AttributeSetDelegateHandles
+	FDelegateHandle PhysicalDamageChangedDelegateHandle;
+	FDelegateHandle MagicalDamageChangedDelegateHandle;
+	FDelegateHandle PhysicalResistanceChangedDelegateHandle;
+	FDelegateHandle MagicalResistanceChangedDelegateHandle;
+	FDelegateHandle DefenseChangedDelegateHandle;
+
+	FDelegateHandle HealthChangedDelegateHandle;
+	FDelegateHandle MaxHealthChangedDelegateHandle;
+	FDelegateHandle HealthRegenChangedDelegateHandle;
+
+	FDelegateHandle MoveSpeedChangedDelegateHandle;
+	FDelegateHandle	JumpHeightChangedDelegateHandle;
+	FDelegateHandle StaminaChangedDelegateHandle;
+	FDelegateHandle MaxStaminaChangedDelegateHandle;
+
+	FDelegateHandle BaseVitalityChangedDelegateHandle;
+	FDelegateHandle VitalityChangedDelegateHandle;
+	FDelegateHandle BaseStrengthChangedDelegateHandle;
+	FDelegateHandle StrengthChangedDelegateHandle;
+	FDelegateHandle BaseIntelligenceChangedDelegateHandle;
+	FDelegateHandle IntelligenceChangedDelegateHandle;
+	FDelegateHandle BaseAgilityChangedDelegateHandle;
+	FDelegateHandle AgilityChangedDelegateHandle;
+	FDelegateHandle BaseEnduranceChangedDelegateHandle;
+	FDelegateHandle EnduranceChangedDelegateHandle;
+	FDelegateHandle CharacterLevelChangedDelegateHandle;
+#pragma endregion
+
+public:
+
+#pragma region AttributeSetChanges
+	virtual void PhysicalDamageChanged(const FOnAttributeChangeData& Data);
+	virtual void MagicalDamageChanged(const FOnAttributeChangeData& Data);
+	virtual void PhysicalResistanceChanged(const FOnAttributeChangeData& Data);
+	virtual void MagicalResistanceChanged(const FOnAttributeChangeData& Data);
+	virtual void DefenseChanged(const FOnAttributeChangeData& Data);
+
+	virtual void HealthChanged(const FOnAttributeChangeData& Data);
+	virtual void MaxHealthChanged(const FOnAttributeChangeData& Data);
+	virtual void HealthRegenChanged(const FOnAttributeChangeData& Data);
+
+	virtual void MoveSpeedChanged(const FOnAttributeChangeData& Data);
+	virtual void JumpHeightChanged(const FOnAttributeChangeData& Data);
+	virtual void StaminaChanged(const FOnAttributeChangeData& Data);
+	virtual void MaxStaminaChanged(const FOnAttributeChangeData& Data);
+
+	virtual void BaseVitalityChanged(const FOnAttributeChangeData& Data);
+	virtual void VitalityChanged(const FOnAttributeChangeData& Data);
+	virtual void BaseStrengthChanged(const FOnAttributeChangeData& Data);
+	virtual void StrengthChanged(const FOnAttributeChangeData& Data);
+	virtual void BaseIntelligenceChanged(const FOnAttributeChangeData& Data);
+	virtual void IntelligenceChanged(const FOnAttributeChangeData& Data);
+	virtual void BaseAgilityChanged(const FOnAttributeChangeData& Data);
+	virtual void AgilityChanged(const FOnAttributeChangeData& Data);
+	virtual void BaseEnduranceChanged(const FOnAttributeChangeData& Data);
+	virtual void EnduranceChanged(const FOnAttributeChangeData& Data);
+	virtual void CharacterLevelChanged(const FOnAttributeChangeData& Data);
+#pragma endregion
+
 };
