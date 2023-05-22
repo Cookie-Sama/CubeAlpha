@@ -72,7 +72,7 @@ void ACA_CharacterBase::Die()
 
 		FGameplayTagContainer EffectTagsToRemove;
 		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
-		int32 NumEffectsEremoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
 	if(DeathMontage)
@@ -154,7 +154,7 @@ void ACA_CharacterBase::AddStartupEffects()
 	AbilitySystemComponent->StartupEffectsApplied = true;
 }
 
-void ACA_CharacterBase::SpeedDownTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+void ACA_CharacterBase::SpeedDownTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)
 {
 	if (NewCount > 0)
 	{
@@ -166,7 +166,7 @@ void ACA_CharacterBase::SpeedDownTagChanged(const FGameplayTag CallbackTag, int3
 	}
 }
 
-void ACA_CharacterBase::SpeedBoostTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+void ACA_CharacterBase::SpeedBoostTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)
 {
 	if (NewCount > 0)
 	{
@@ -178,7 +178,7 @@ void ACA_CharacterBase::SpeedBoostTagChanged(const FGameplayTag CallbackTag, int
 	}
 }
 
-void ACA_CharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+void ACA_CharacterBase::StunTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)
 {
 	if (NewCount > 0)
 	{
@@ -204,7 +204,7 @@ void ACA_CharacterBase::BeginPlay()
 	
 }
 
-void ACA_CharacterBase::ApplyDamage(float Damage, CA_DamageType Type)
+void ACA_CharacterBase::ApplyDamage(const float Damage, const CA_DamageType Type)
 {
 	const float mitigatedDamage = CalculateMitigatedDamage(Damage, Type);
 
@@ -215,7 +215,7 @@ void ACA_CharacterBase::ApplyDamage(float Damage, CA_DamageType Type)
 	}
 }
 
-float ACA_CharacterBase::CalculateMitigatedDamage(float Damage, CA_DamageType Type) const
+float ACA_CharacterBase::CalculateMitigatedDamage(const float Damage, const CA_DamageType Type) const
 {
 	float mitigatedDamage = Damage - GetDefense();
 	if(Type == CA_DamageType::Physical)
@@ -233,7 +233,7 @@ float ACA_CharacterBase::CalculateMitigatedDamage(float Damage, CA_DamageType Ty
 }
 
 // Called every frame
-void ACA_CharacterBase::Tick(float DeltaTime)
+void ACA_CharacterBase::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

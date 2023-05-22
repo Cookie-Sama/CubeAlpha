@@ -6,7 +6,7 @@ ItemClass(nullptr),
 Quantity(0)
 {}
 
-bool UCA_InventorySlot::CanStackItem(const TSubclassOf<UCA_InventoryItem> InItemClass, int32 InQuantity) const
+bool UCA_InventorySlot::CanStackItem(const TSubclassOf<UCA_InventoryItem> InItemClass, const int32 InQuantity) const
 {
 	if (InItemClass == nullptr)
 		return false;

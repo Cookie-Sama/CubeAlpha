@@ -1,5 +1,10 @@
 #include "System/Player/CA_InventoryItem.h"
 
+UCA_InventoryItem::UCA_InventoryItem()
+{
+	ItemType = EItemType::Unknown;
+}
+
 FString UCA_InventoryItem::GetItemName() const
 {
 	return ItemName;
@@ -15,7 +20,7 @@ ERarity UCA_InventoryItem::GetRarity() const
 	return Rarity;
 }
 
-void UCA_InventoryItem::SetRarity(ERarity NewRarity)
+void UCA_InventoryItem::SetRarity(const ERarity NewRarity)
 {
 	Rarity = NewRarity;
 }
@@ -25,7 +30,7 @@ EItemType UCA_InventoryItem::GetItemType() const
 	return ItemType;
 }
 
-void UCA_InventoryItem::SetItemType(EItemType NewType)
+void UCA_InventoryItem::SetItemType(const EItemType NewType)
 {
 	ItemType = NewType;
 }

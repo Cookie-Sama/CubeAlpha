@@ -32,3 +32,25 @@ enum class ERarity : uint8
 	Epic,
 	Legendary
 };
+
+UENUM(BlueprintType)
+enum class EAttribute : uint8
+{
+	None UMETA(DisplayName = "None"),
+	Defense UMETA(DisplayName = "Defense"),
+	Vitality UMETA(DisplayName = "Vitality"),
+	Strength UMETA(DisplayName = "Strength"),
+	Intelligence UMETA(DisplayName = "Intelligence"),
+	Agility UMETA(DisplayName = "Agility"),
+	Endurance UMETA(DisplayName = "Endurance"),
+};
+
+UENUM(BlueprintType)
+enum class EClassType : uint8
+{
+	Mage,
+	Warrior,
+	Archer,
+	Summoner,
+	All
+};

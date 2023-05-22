@@ -18,6 +18,8 @@ UCLASS(Blueprintable)
 class CUBEALPHA_API UCA_InventoryItem : public UObject
 {
 	GENERATED_BODY()
+public:
+    UCA_InventoryItem();
 protected:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory Item")
         FString ItemName;
