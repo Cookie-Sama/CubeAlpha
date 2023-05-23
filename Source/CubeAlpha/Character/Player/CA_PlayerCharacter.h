@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "CA_CharacterWithEquipment.h"
 #include "CA_ExperienceAttributeSet.h"
+#include "InputActionValue.h"
+#include "InputMappingContext.h"
 #include "CA_PlayerCharacter.generated.h"
 
 /**
@@ -12,8 +14,40 @@ UCLASS()
 class CUBEALPHA_API ACA_PlayerCharacter : public ACA_CharacterWithEquipment
 {
 	GENERATED_BODY()
-public:
+
 	ACA_PlayerCharacter(const class FObjectInitializer& ObjectInitializer);
+
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* PlayerMappingContext;
+
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* JumpAction;
+
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* MoveAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* LookAction;
+
+protected:
+
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void Look(const FInputActionValue& Value);
+
+	// APawn interface
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// To add mapping context
+	virtual void BeginPlay() override;
+
+public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
