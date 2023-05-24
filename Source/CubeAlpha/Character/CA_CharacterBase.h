@@ -6,6 +6,7 @@
 #include "CubeAlpha.h"
 #include "CA_GameplayAbility.h"
 #include "GameplayTagContainer.h"
+#include "CA_AbilitySystemComponent.h"
 #include "CA_CombatAttributeSet.h"
 #include "CA_HealthAttributeSet.h"
 #include "CA_MovementAttributeSet.h"
@@ -59,7 +60,7 @@ private:
 #pragma endregion
 
 public:
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "DivineAscension|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "CubeAlpha|Abilities")
 		TArray<TSubclassOf<class UCA_GameplayAbility>> CharacterAbilities;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "CubeAlpha|Abilities")
@@ -70,6 +71,9 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+	virtual void GiveDefaultAbilities();
 	virtual void AddCharacterAbilities();
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
@@ -91,8 +95,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
-	TWeakObjectPtr<class UCA_AbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
+	class UCA_AbilitySystemComponent* AbilitySystemComponent;
 
 	virtual void ApplyDamage(float Damage, CA_DamageType Type);
 	float CalculateMitigatedDamage(float Damage, CA_DamageType Type) const;
@@ -120,6 +124,45 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+#pragma region Montages
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		UAnimMontage* PrimaryMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		float PrimaryPlayRate = 1;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		UAnimMontage* SecondaryMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		float SecondaryPlayRate = 1;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		UAnimMontage* ActiveOneMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		float ActiveOnePlayRate = 1;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		UAnimMontage* ActiveTwoMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		float ActiveTwoPlayRate = 1;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		UAnimMontage* ActiveThreeMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		float ActiveThreePlayRate = 1;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		UAnimMontage* UltimateMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
+		float UltimatePlayRate = 1;
+
+#pragma endregion
 
 #pragma region AttributeSetGetterSetters
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")

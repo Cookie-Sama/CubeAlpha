@@ -1,6 +1,5 @@
 #include "Character/CA_CharacterBase.h"
 #include "Components/CapsuleComponent.h"
-#include "CA_AbilitySystemComponent.h"
 #include "CA_CombatAttributeSet.h"
 #include "CA_HealthAttributeSet.h"
 #include "CA_MovementAttributeSet.h"
@@ -29,7 +28,6 @@ ACA_CharacterBase::ACA_CharacterBase(const class FObjectInitializer& ObjectIniti
 	MovementAttributeSet = CreateDefaultSubobject<UCA_MovementAttributeSet>("Movement Attribute Set");
 	RPGStatsAttributeSet = CreateDefaultSubobject<UCA_RPGStatsAttributeSet>("RPG Stats Attribute Set");
 
-	//TODO FIXME figure how to move it to PlayerState
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::StunTagChanged);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.SpeedDowned")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedDownTagChanged);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Buff.SpeedBoosted")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACA_CharacterBase::SpeedBoostTagChanged);
@@ -47,7 +45,7 @@ int32 ACA_CharacterBase::GetAbilityLevel(CA_AbilityID AbilityID) const
 
 void ACA_CharacterBase::RemoveCharacterAbilities()
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->CharacterAbilitiesGiven) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || !AbilitySystemComponent->CharacterAbilitiesGiven) {
 		return;
 	}
 	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
@@ -75,7 +73,7 @@ void ACA_CharacterBase::Die()
 
 	OnCharacterDied.Broadcast(this);
 
-	if(AbilitySystemComponent.IsValid())
+	if(AbilitySystemComponent)
 	{
 		AbilitySystemComponent->CancelAbilities();
 
@@ -101,12 +99,46 @@ void ACA_CharacterBase::FinishDying()
 
 UAbilitySystemComponent* ACA_CharacterBase::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent.Get();
+	return AbilitySystemComponent;
+}
+
+void ACA_CharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+	InitializeAttributes();
+	GiveDefaultAbilities();
+}
+
+void ACA_CharacterBase::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+	UE_LOG(LogTemp, Error, TEXT("LA"));
+	InitializeAttributes();
+}
+
+void ACA_CharacterBase::GiveDefaultAbilities()
+{
+	if (HasAuthority() && AbilitySystemComponent)
+	{
+		for (TSubclassOf<UCA_GameplayAbility>& StartupAbility : CharacterAbilities)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(StartupAbility.GetDefaultObject(), 1, 0));
+		}
+	}
 }
 
 void ACA_CharacterBase::AddCharacterAbilities()
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->CharacterAbilitiesGiven) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || AbilitySystemComponent->CharacterAbilitiesGiven) {
 		return;
 	}
 
@@ -120,7 +152,7 @@ void ACA_CharacterBase::AddCharacterAbilities()
 
 void ACA_CharacterBase::InitializeAttributes()
 {
-	if (AbilitySystemComponent.IsValid() && DefaultAttributes)
+	if (AbilitySystemComponent && DefaultAttributes)
 	{
 		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 		EffectContext.AddSourceObject(this);
@@ -144,7 +176,7 @@ void ACA_CharacterBase::InitializeAttributes()
 
 void ACA_CharacterBase::AddStartupEffects()
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->StartupEffectsApplied) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent || AbilitySystemComponent->StartupEffectsApplied) {
 		return;
 	}
 
@@ -156,7 +188,7 @@ void ACA_CharacterBase::AddStartupEffects()
 		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, RPGStatsAttributeSet->GetLevel(), EffectContext);
 		if (NewHandle.IsValid())
 		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
 		}
 	}
 
@@ -211,7 +243,7 @@ void ACA_CharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AbilitySystemComponent.IsValid())
+	if (AbilitySystemComponent)
 	{
 		PhysicalDamageChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(CombatAttributeSet->GetPhysicalDamageAttribute()).AddUObject(this, &ACA_CharacterBase::PhysicalDamageChanged);
 		MagicalDamageChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(CombatAttributeSet->GetMagicalDamageAttribute()).AddUObject(this, &ACA_CharacterBase::MagicalDamageChanged);

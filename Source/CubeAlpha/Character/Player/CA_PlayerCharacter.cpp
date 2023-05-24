@@ -1,6 +1,7 @@
 #include "Character/Player/CA_PlayerCharacter.h"
 #include "CA_AbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -109,7 +110,35 @@ void ACA_PlayerCharacter::BeginPlay()
 	}
 }
 
+FTransform ACA_PlayerCharacter::GetProjectileTransforms(FName Socket) const
+{
+	FVector LocalCamera = FollowCamera->GetComponentLocation();
+	FVector Camera_Direction = FollowCamera->GetForwardVector();
+	float Range = 10000;
+	FVector Destination = (Camera_Direction * Range) + LocalCamera;
+
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+
+	FVector WeaponSocketLocation = GetMesh()->GetSocketLocation(Socket);;
+	FRotator Rotation;
+	FTransform Projectile_Movement;
+
+	if (FHitResult Hit; GetWorld()->LineTraceSingleByChannel(Hit, LocalCamera, Destination, ECollisionChannel::ECC_Visibility, params, FCollisionResponseParams())) {
+		Rotation = UKismetMathLibrary::FindLookAtRotation(WeaponSocketLocation, Hit.ImpactPoint);
+
+	}
+	else {
+		Rotation = UKismetMathLibrary::FindLookAtRotation(WeaponSocketLocation, Destination);
+	}
+	Projectile_Movement.SetLocation(WeaponSocketLocation);
+	Projectile_Movement.SetRotation(Rotation.Quaternion());
+	Projectile_Movement.SetScale3D(UE::Math::TVector(1.0, 1.0, 1.0));
+	return Projectile_Movement;
+}
+
 #pragma region Cooldowns
+
 bool ACA_PlayerCharacter::GetCooldownRemainingForAbility(const FGameplayTag AbilityTag, float& OutTimeRemaining) const
 {
 	FString CooldownTag = AbilityTag.ToString().Append(".OnCooldown");
@@ -132,7 +161,7 @@ bool ACA_PlayerCharacter::GetCooldownDurationForAbility(const FGameplayTag Abili
 
 bool ACA_PlayerCharacter::GetCooldownRemainingForTag(const FGameplayTagContainer CooldownTags, float& OutTimeRemaining) const
 {
-	if (AbilitySystemComponent.IsValid() && CooldownTags.Num() > 0)
+	if (AbilitySystemComponent && CooldownTags.Num() > 0)
 	{
 		OutTimeRemaining = 0.f;
 
@@ -151,7 +180,7 @@ bool ACA_PlayerCharacter::GetCooldownRemainingForTag(const FGameplayTagContainer
 
 bool ACA_PlayerCharacter::GetCooldownDurationForTag(const FGameplayTagContainer CooldownTags, float& OutDuration) const
 {
-	if (AbilitySystemComponent.IsValid() && CooldownTags.Num() > 0)
+	if (AbilitySystemComponent && CooldownTags.Num() > 0)
 	{
 		OutDuration = 0.f;
 

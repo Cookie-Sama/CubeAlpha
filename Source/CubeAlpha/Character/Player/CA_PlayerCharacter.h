@@ -60,6 +60,9 @@ public:
 	/** Returns FollowCamera subObject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	UFUNCTION(BluePrintCallable, Category = "CubeAlpha|Character|Ability")
+		FTransform GetProjectileTransforms(FName Socket) const;
+
 #pragma region Cooldowns
 
 	UFUNCTION(BlueprintCallable, meta = (DynamicOutputParam = "OutTimeRemaining"))

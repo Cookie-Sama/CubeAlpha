@@ -36,4 +36,6 @@ protected:
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 
+	UFUNCTION()
+	virtual void OnGameplayEventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 };

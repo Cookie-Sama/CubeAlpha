@@ -19,3 +19,7 @@ void UCA_GameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo
 		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
 	}
 }
+
+void UCA_GameplayAbility::OnGameplayEventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+}
