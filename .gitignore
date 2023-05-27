@@ -67,3 +67,5 @@ xcuserdata/
 # Unity project temp files
 Temp/
 Library/
+
+.vsconfig
