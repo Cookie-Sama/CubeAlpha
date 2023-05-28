@@ -1,4 +1,4 @@
-#include "System/GAS/CA_GameplayAbility.h"
+#include "System/GAS/Abilities/CA_GameplayAbility.h"
 
 #include "AbilitySystemComponent.h"
 

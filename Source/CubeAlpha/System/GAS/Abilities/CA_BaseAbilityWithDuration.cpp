@@ -1,4 +1,4 @@
-#include "System/GAS/CA_BaseAbilityWithDuration.h"
+#include "System/GAS/Abilities/CA_BaseAbilityWithDuration.h"
 
 void UCA_BaseAbilityWithDuration::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "System/GAS/CA_GameplayAbility.h"
+#include "System/GAS/Abilities/CA_GameplayAbility.h"
 #include "CA_BaseAbilityWithDuration.generated.h"
 
 /**

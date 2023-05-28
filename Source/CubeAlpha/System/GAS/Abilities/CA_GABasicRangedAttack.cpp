@@ -1,4 +1,4 @@
-#include "System/GAS/CA_GABasicRangedAttack.h"
+#include "System/GAS/Abilities/CA_GABasicRangedAttack.h"
 
 #include "CA_PlayerCharacter.h"
 #include "GDAT_PlayMontageAndWaitForEvent.h"

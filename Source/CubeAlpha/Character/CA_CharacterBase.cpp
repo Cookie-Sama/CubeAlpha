@@ -272,6 +272,9 @@ void ACA_CharacterBase::BeginPlay()
 		EnduranceChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(RPGStatsAttributeSet->GetEnduranceAttribute()).AddUObject(this, &ACA_CharacterBase::EnduranceChanged);
 		CharacterLevelChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(RPGStatsAttributeSet->GetLevelAttribute()).AddUObject(this, &ACA_CharacterBase::CharacterLevelChanged);
 	}
+
+	GetCharacterMovement()->JumpZVelocity = 700 * GetJumpHeight();//700 cm/s is the base jump height in Unreal
+	GetCharacterMovement()->MaxWalkSpeed = 500 * GetMoveSpeed();
 }
 
 void ACA_CharacterBase::ApplyDamage(const float Damage, const CA_DamageType Type)
