@@ -15,14 +15,14 @@ void UCA_BaseAbilityWithDuration::ActivateAbility(const FGameplayAbilitySpecHand
 
 void UCA_BaseAbilityWithDuration::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	bool bReplicateEndAbility)
+	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	GetWorld()->GetTimerManager().ClearTimer(AbilityTimerHandle);
 	OnAbilityDurationEndedImplementation();
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, false);
+	EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UCA_BaseAbilityWithDuration::OnDurationTimerEnded()
 {
-	EndAbility(CurrentSpecHandle, GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+	EndAbility(CurrentSpecHandle, GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 }

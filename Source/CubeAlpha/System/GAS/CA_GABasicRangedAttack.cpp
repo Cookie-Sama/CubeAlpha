@@ -24,6 +24,5 @@ void UCA_GABasicRangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 
 void UCA_GABasicRangedAttack::OnGameplayEventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Oui"));
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }

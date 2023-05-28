@@ -59,7 +59,7 @@ private:
 
 #pragma endregion
 
-public:
+protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "CubeAlpha|Abilities")
 		TArray<TSubclassOf<class UCA_GameplayAbility>> CharacterAbilities;
 
@@ -84,6 +84,12 @@ public:
 
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
+	class UCA_AbilitySystemComponent* AbilitySystemComponent;
+
 	UFUNCTION(BlueprintNativeEvent)
 		void OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
 	virtual void OnActiveGameplayEffectAddedCallback_Implementation(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle) {};
@@ -91,14 +97,6 @@ public:
 		void OnRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved);
 	virtual void OnRemoveGameplayEffectCallback_Implementation(const FActiveGameplayEffect& EffectRemoved) {};
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
-	class UCA_AbilitySystemComponent* AbilitySystemComponent;
-
-	virtual void ApplyDamage(float Damage, CA_DamageType Type);
 	float CalculateMitigatedDamage(float Damage, CA_DamageType Type) const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
@@ -124,6 +122,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void ApplyDamage(float Damage, CA_DamageType Type);
 
 #pragma region Montages
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Ability|Montages")
