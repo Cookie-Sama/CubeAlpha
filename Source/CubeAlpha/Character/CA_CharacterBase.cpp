@@ -273,8 +273,8 @@ void ACA_CharacterBase::BeginPlay()
 		CharacterLevelChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(RPGStatsAttributeSet->GetLevelAttribute()).AddUObject(this, &ACA_CharacterBase::CharacterLevelChanged);
 	}
 
-	GetCharacterMovement()->JumpZVelocity = 700 * GetJumpHeight();//700 cm/s is the base jump height in Unreal
-	GetCharacterMovement()->MaxWalkSpeed = 500 * GetMoveSpeed();
+	GetCharacterMovement()->JumpZVelocity = 700 * GetJumpHeight();// 700 cm/s is the base jump height in Unreal
+	GetCharacterMovement()->MaxWalkSpeed = 500 * GetMoveSpeed();// 500 cm/s is the base jump height in Unreal
 }
 
 void ACA_CharacterBase::ApplyDamage(const float Damage, const CA_DamageType Type)
@@ -668,23 +668,30 @@ void ACA_CharacterBase::SetCharacterLevel(const float& NewLevel) const
 
 void ACA_CharacterBase::LevelUp() const
 {
-	if (GetCharacterLevel() < 10) {
+	if (GetCharacterLevel() < 10) { // TODO upgrade data table, Cap at 10 for now
 		const float NewLevel = GetCharacterLevel() + 1;
 		SetCharacterLevel(NewLevel);
-		FString ContextString;
-		FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), NewLevel)), ContextString);
-		if(StatsRow)
+		UpdateStats(true);
+	}
+}
+
+void ACA_CharacterBase::UpdateStats(const bool bLevelUp) const
+{
+	if (bLevelUp) {
+		const FString ContextString;
+		if (const FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), GetCharacterLevel())), ContextString))
 		{
 			SetBaseVitality(StatsRow->Vitality);
 			SetBaseStrength(StatsRow->Strength);
 			SetBaseIntelligence(StatsRow->Intelligence);
 			SetBaseAgility(StatsRow->Agility);
 			SetBaseEndurance(StatsRow->Endurance);
-			//TODO Update real stats
 		}
 		SetHealth(GetMaxHealth());
 		SetStamina(GetMaxStamina());
 	}
+	GetCharacterMovement()->JumpZVelocity = 700 * GetJumpHeight();// 700 cm/s is the base jump height in Unreal
+	GetCharacterMovement()->MaxWalkSpeed = 500 * GetMoveSpeed();// 500 cm/s is the base move speed in Unreal
 }
 
 #pragma region AttributeSetChanges
@@ -722,10 +729,12 @@ void ACA_CharacterBase::HealthRegenChanged(const FOnAttributeChangeData& Data)
 
 void ACA_CharacterBase::MoveSpeedChanged(const FOnAttributeChangeData& Data)
 {
+	GetCharacterMovement()->MaxWalkSpeed = 500 * GetMoveSpeed();// 500 cm/s is the base move speed in Unreal
 }
 
 void ACA_CharacterBase::JumpHeightChanged(const FOnAttributeChangeData& Data)
 {
+	GetCharacterMovement()->JumpZVelocity = 700 * GetJumpHeight();// 700 cm/s is the base jump height in Unreal
 }
 
 void ACA_CharacterBase::StaminaChanged(const FOnAttributeChangeData& Data)

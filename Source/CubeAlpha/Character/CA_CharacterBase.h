@@ -261,7 +261,10 @@ public:
 #pragma endregion
 
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
-		void LevelUp() const;
+	void LevelUp() const;
+
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+	void UpdateStats(const bool bLevelUp) const;
 
 protected:
 
