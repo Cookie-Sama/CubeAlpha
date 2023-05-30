@@ -27,7 +27,7 @@ bool UCA_CharacterEquipmentComponent::EquipItem(const TSubclassOf<UCA_GearItem> 
 	}
 
 	// Check if the gear item is already equipped in the same equipment slot
-	if (GetEquippedItem(NewGear->EquipmentSlot))
+	if (GetEquippedItem(NewGear->GetEquipmentSlot()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GearItem already equipped in the same slot."));
 		return false;
@@ -35,14 +35,14 @@ bool UCA_CharacterEquipmentComponent::EquipItem(const TSubclassOf<UCA_GearItem> 
 
 	// Check if the gear item is compatible with the character's class
 	const ACA_CharacterWithEquipment* Owner = Cast<ACA_CharacterWithEquipment>(GetOwner());
-	if (NewGear->EquipmentClassType != EClassType::All && NewGear->EquipmentClassType != Owner->GetCharacterClass())
+	if (NewGear->GetEquipmentClassType() != EClassType::All && NewGear->GetEquipmentClassType() != Owner->GetCharacterClass())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GearItem is not compatible with the character's class."));
 		return false;
 	}
 
 	// Unequip any existing gear in the same equipment slot
-	UnequipItem(NewGear->EquipmentSlot);
+	UnequipItem(NewGear->GetEquipmentSlot());
 
 	// Add the new gear item to the equipped gear map
 	EquippedItems.Add(NewGear->GetEquipmentSlot(), NewGear);
@@ -75,7 +75,7 @@ UCA_GearItem* UCA_CharacterEquipmentComponent::GetEquippedItem(const EEquipmentS
 	return nullptr;
 }
 
-int32 UCA_CharacterEquipmentComponent::GetTotalAttributeValue(const EAttribute Attribute) const
+int32 UCA_CharacterEquipmentComponent::GetTotalAttributeValue(const EEquipmentAttribute Attribute) const
 {
 	int32 TotalValue = 0;
 
@@ -85,23 +85,35 @@ int32 UCA_CharacterEquipmentComponent::GetTotalAttributeValue(const EAttribute A
 		{
 			switch (Attribute)
 			{
-			case EAttribute::Vitality:
-				TotalValue += EquippedItem->Vitality;
+			case EEquipmentAttribute::Vitality:
+				TotalValue += EquippedItem->GetVitality();
 				break;
-			case EAttribute::Strength:
-				TotalValue += EquippedItem->Strength;
+			case EEquipmentAttribute::Strength:
+				TotalValue += EquippedItem->GetStrength();
 				break;
-			case EAttribute::Intelligence:
-				TotalValue += EquippedItem->Intelligence;
+			case EEquipmentAttribute::Intelligence:
+				TotalValue += EquippedItem->GetIntelligence();
 				break;
-			case EAttribute::Agility:
-				TotalValue += EquippedItem->Agility;
+			case EEquipmentAttribute::Agility:
+				TotalValue += EquippedItem->GetAgility();
 				break;
-			case EAttribute::Endurance:
-				TotalValue += EquippedItem->Endurance;
+			case EEquipmentAttribute::Endurance:
+				TotalValue += EquippedItem->GetEndurance();
 				break;
-			case EAttribute::Defense:
-				TotalValue += EquippedItem->Defense;
+			case EEquipmentAttribute::Defense:
+				TotalValue += EquippedItem->GetDefense();
+				break;
+			case EEquipmentAttribute::PhysicalDamage:
+				TotalValue += EquippedItem->GetPhysicalDamage();
+				break;
+			case EEquipmentAttribute::MagicalDamage:
+				TotalValue += EquippedItem->GetMagicalDamage();
+				break;
+			case EEquipmentAttribute::PhysicalResistance:
+				TotalValue += EquippedItem->GetPhysicalResistance();
+				break;
+			case EEquipmentAttribute::MagicalResistance:
+				TotalValue += EquippedItem->GetMagicalResistance();
 				break;
 			default:
 				break;
@@ -114,30 +126,50 @@ int32 UCA_CharacterEquipmentComponent::GetTotalAttributeValue(const EAttribute A
 
 int32 UCA_CharacterEquipmentComponent::GetTotalDefense() const
 {
-	return GetTotalAttributeValue(EAttribute::Defense);
+	return GetTotalAttributeValue(EEquipmentAttribute::Defense);
 }
 
 int32 UCA_CharacterEquipmentComponent::GetTotalVitality() const
 {
-	return GetTotalAttributeValue(EAttribute::Vitality);
+	return GetTotalAttributeValue(EEquipmentAttribute::Vitality);
 }
 
 int32 UCA_CharacterEquipmentComponent::GetTotalStrength() const
 {
-	return GetTotalAttributeValue(EAttribute::Strength);
+	return GetTotalAttributeValue(EEquipmentAttribute::Strength);
 }
 
 int32 UCA_CharacterEquipmentComponent::GetTotalIntelligence() const
 {
-	return GetTotalAttributeValue(EAttribute::Intelligence);
+	return GetTotalAttributeValue(EEquipmentAttribute::Intelligence);
 }
 
 int32 UCA_CharacterEquipmentComponent::GetTotalAgility() const
 {
-	return GetTotalAttributeValue(EAttribute::Agility);
+	return GetTotalAttributeValue(EEquipmentAttribute::Agility);
 }
 
 int32 UCA_CharacterEquipmentComponent::GetTotalEndurance() const
 {
-	return GetTotalAttributeValue(EAttribute::Endurance);
+	return GetTotalAttributeValue(EEquipmentAttribute::Endurance);
+}
+
+int32 UCA_CharacterEquipmentComponent::GetTotalPhysicalDamage() const
+{
+	return GetTotalAttributeValue(EEquipmentAttribute::PhysicalDamage);
+}
+
+int32 UCA_CharacterEquipmentComponent::GetTotalMagicalDamage() const
+{
+	return GetTotalAttributeValue(EEquipmentAttribute::MagicalDamage);
+}
+
+int32 UCA_CharacterEquipmentComponent::GetTotalPhysicalResistance() const
+{
+	return GetTotalAttributeValue(EEquipmentAttribute::PhysicalResistance);
+}
+
+int32 UCA_CharacterEquipmentComponent::GetTotalMagicalResistance() const
+{
+	return GetTotalAttributeValue(EEquipmentAttribute::MagicalResistance);
 }

@@ -266,6 +266,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	void UpdateStats(const bool bLevelUp) const;
 
+	FTimerHandle HealthRegenTimerHandle;
+	void RegenHealth() const;
+
 protected:
 
 #pragma region AttributeSetDelegateHandles

@@ -25,27 +25,42 @@ public:
     UFUNCTION(BlueprintCallable)
         bool UnequipItem(EEquipmentSlot Slot);
 
-    UFUNCTION(BlueprintCallable)
+#pragma region Getters
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
         UCA_GearItem* GetEquippedItem(EEquipmentSlot Slot);
 
-    UFUNCTION(BlueprintCallable)
-        int32 GetTotalAttributeValue(EAttribute Attribute) const;
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
+        int32 GetTotalAttributeValue(EEquipmentAttribute Attribute) const;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
         int32 GetTotalDefense() const;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
         int32 GetTotalVitality() const;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
         int32 GetTotalStrength() const;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
         int32 GetTotalIntelligence() const;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
         int32 GetTotalAgility() const;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
         int32 GetTotalEndurance() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
+        int32 GetTotalPhysicalDamage() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
+        int32 GetTotalMagicalDamage() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
+        int32 GetTotalPhysicalResistance() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Equipment Component")
+        int32 GetTotalMagicalResistance() const;
+#pragma endregion
+
 };

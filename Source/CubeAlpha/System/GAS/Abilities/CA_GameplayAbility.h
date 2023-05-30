@@ -21,7 +21,10 @@ public:
 		bool ActivateAbilityOnGranted = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "DataAsset")
-		float AbilityDamage = 0;
+		float AbilityDamageMultiplier = 0; //Use it as a multiplier for Damage Type
+
+	UPROPERTY(BlueprintReadOnly, Category = "DataAsset")
+		CA_DamageType AbilityDamageType = CA_DamageType::Physical;
 
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 

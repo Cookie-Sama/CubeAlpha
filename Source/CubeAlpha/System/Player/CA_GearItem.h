@@ -28,6 +28,7 @@ class CUBEALPHA_API UCA_GearItem : public UCA_InventoryItem
 public:
     UCA_GearItem();
 
+protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gear Item")
         EEquipmentSlot EquipmentSlot;
 
@@ -55,8 +56,19 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gear Item")
         int32 Endurance;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gear Item")
+        int32 PhysicalDamage;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gear Item")
+        int32 MagicalDamage;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gear Item")
+        int32 PhysicalResistance;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gear Item")
+        int32 MagicalResistance;
 public:
+#pragma region GettersSetters
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         EEquipmentSlot GetEquipmentSlot() const;
 
@@ -67,47 +79,73 @@ public:
         EClassType GetEquipmentClassType() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetEquipmentClassType(EClassType NewClassType);
+        void SetEquipmentClassType(const EClassType NewClassType);
 
 	UFUNCTION(BlueprintCallable, Category = "Gear Item")
         int32 GetEquipmentLevel() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetEquipmentLevel(int32 NewLevel);
+        void SetEquipmentLevel(const int32 NewLevel);
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         int32 GetDefense() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetDefense(int32 NewDefense);
+        void SetDefense(const int32 NewDefense);
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         int32 GetVitality() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetVitality(int32 NewVitality);
+        void SetVitality(const int32 NewVitality);
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         int32 GetStrength() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetStrength(int32 NewStrength);
+        void SetStrength(const int32 NewStrength);
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         int32 GetIntelligence() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetIntelligence(int32 NewIntelligence);
+        void SetIntelligence(const int32 NewIntelligence);
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         int32 GetAgility() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetAgility(int32 NewAgility);
+        void SetAgility(const int32 NewAgility);
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         int32 GetEndurance() const;
 
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
-        void SetEndurance(int32 NewEndurance);
+        void SetEndurance(const int32 NewEndurance);
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        int32 GetPhysicalDamage() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        void SetPhysicalDamage(const int32 NewPhysicalDamage);
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        int32 GetMagicalDamage() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        void SetMagicalDamage(const int32 NewMagicalDamage);
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        int32 GetPhysicalResistance() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        void SetPhysicalResistance(const int32 NewPhysicalResistance);
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        int32 GetMagicalResistance() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Gear Item")
+        void SetMagicalResistance(const int32 NewMagicalResistance);
+#pragma endregion
+
 };

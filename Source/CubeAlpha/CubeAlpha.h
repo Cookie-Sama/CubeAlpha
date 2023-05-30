@@ -34,7 +34,7 @@ enum class ERarity : uint8
 };
 
 UENUM(BlueprintType)
-enum class EAttribute : uint8
+enum class EEquipmentAttribute : uint8
 {
 	None UMETA(DisplayName = "None"),
 	Defense UMETA(DisplayName = "Defense"),
@@ -43,6 +43,10 @@ enum class EAttribute : uint8
 	Intelligence UMETA(DisplayName = "Intelligence"),
 	Agility UMETA(DisplayName = "Agility"),
 	Endurance UMETA(DisplayName = "Endurance"),
+	PhysicalDamage UMETA(DisplayName = "PhysicalDamage"),
+	MagicalDamage UMETA(DisplayName = "MagicalDamage"),
+	PhysicalResistance UMETA(DisplayName = "PhysicalResistance"),
+	MagicalResistance UMETA(DisplayName = "MagicalResistance"),
 };
 
 UENUM(BlueprintType)

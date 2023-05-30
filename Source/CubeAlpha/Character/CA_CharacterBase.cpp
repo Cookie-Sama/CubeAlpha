@@ -279,9 +279,9 @@ void ACA_CharacterBase::BeginPlay()
 
 void ACA_CharacterBase::ApplyDamage(const float Damage, const CA_DamageType Type)
 {
-	const float mitigatedDamage = CalculateMitigatedDamage(Damage, Type);
+	const float MitigatedDamage = CalculateMitigatedDamage(Damage, Type);
 
-	SetHealth(GetHealth() - mitigatedDamage);
+	SetHealth(GetHealth() - MitigatedDamage);
 	if(GetHealth()<=0)
 	{
 		Die();
@@ -290,19 +290,19 @@ void ACA_CharacterBase::ApplyDamage(const float Damage, const CA_DamageType Type
 
 float ACA_CharacterBase::CalculateMitigatedDamage(const float Damage, const CA_DamageType Type) const
 {
-	float mitigatedDamage = Damage - GetDefense();
+	float MitigatedDamage = Damage - GetDefense();
 	if(Type == CA_DamageType::Physical)
 	{
-		mitigatedDamage -= mitigatedDamage * GetPhysicalResistance();
+		MitigatedDamage -= MitigatedDamage * GetPhysicalResistance();
 	}
 	else
 	{
-		mitigatedDamage -= mitigatedDamage * GetMagicalResistance();
+		MitigatedDamage -= MitigatedDamage * GetMagicalResistance();
 	}
 
-	mitigatedDamage = FMath::Max(mitigatedDamage, 0.0f); //To Avoid negative damage
+	MitigatedDamage = FMath::Max(MitigatedDamage, 0.0f); //To Avoid negative damage
 
-	return mitigatedDamage;
+	return MitigatedDamage;
 }
 
 // Called every frame
@@ -668,6 +668,9 @@ void ACA_CharacterBase::SetCharacterLevel(const float& NewLevel) const
 
 void ACA_CharacterBase::LevelUp() const
 {
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Level Up!"));
+	}
 	if (GetCharacterLevel() < 10) { // TODO upgrade data table, Cap at 10 for now
 		const float NewLevel = GetCharacterLevel() + 1;
 		SetCharacterLevel(NewLevel);
@@ -690,13 +693,21 @@ void ACA_CharacterBase::UpdateStats(const bool bLevelUp) const
 		SetHealth(GetMaxHealth());
 		SetStamina(GetMaxStamina());
 	}
-	GetCharacterMovement()->JumpZVelocity = 700 * GetJumpHeight();// 700 cm/s is the base jump height in Unreal
-	GetCharacterMovement()->MaxWalkSpeed = 500 * GetMoveSpeed();// 500 cm/s is the base move speed in Unreal
+}
+
+void ACA_CharacterBase::RegenHealth() const
+{
+	if (GetHealth() < GetMaxHealth())
+	{
+		const float Health = GetHealth() + (GetHealthRegen() * GetWorld()->GetDeltaSeconds());
+		SetHealth(FMath::Min(Health, GetMaxHealth()));
+	}
 }
 
 #pragma region AttributeSetChanges
 void ACA_CharacterBase::PhysicalDamageChanged(const FOnAttributeChangeData& Data)
 {
+	//TODO update HUD, update ability damage ?
 }
 
 void ACA_CharacterBase::MagicalDamageChanged(const FOnAttributeChangeData& Data)
@@ -717,6 +728,10 @@ void ACA_CharacterBase::DefenseChanged(const FOnAttributeChangeData& Data)
 
 void ACA_CharacterBase::HealthChanged(const FOnAttributeChangeData& Data)
 {
+	if(GetHealth()<=0)
+	{
+		Die();
+	}
 }
 
 void ACA_CharacterBase::MaxHealthChanged(const FOnAttributeChangeData& Data)
@@ -725,6 +740,17 @@ void ACA_CharacterBase::MaxHealthChanged(const FOnAttributeChangeData& Data)
 
 void ACA_CharacterBase::HealthRegenChanged(const FOnAttributeChangeData& Data)
 {
+	if(GetHealthRegen()>0)
+	{
+		if(!GetWorldTimerManager().IsTimerActive(HealthRegenTimerHandle))
+		{
+			GetWorldTimerManager().SetTimer(HealthRegenTimerHandle, this, &ACA_CharacterBase::RegenHealth, 2, true, 0.01);
+		}
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(HealthRegenTimerHandle);
+	}
 }
 
 void ACA_CharacterBase::MoveSpeedChanged(const FOnAttributeChangeData& Data)
@@ -747,45 +773,70 @@ void ACA_CharacterBase::MaxStaminaChanged(const FOnAttributeChangeData& Data)
 
 void ACA_CharacterBase::BaseVitalityChanged(const FOnAttributeChangeData& Data)
 {
+	const float Difference = Data.NewValue - Data.OldValue;
+	const float NewVitality = GetVitality();
+	SetVitality(NewVitality + Difference);
 }
 
 void ACA_CharacterBase::VitalityChanged(const FOnAttributeChangeData& Data)
 {
+	SetMaxHealth(GetVitality() * 5); // TODO maybe change this formula
 }
 
 void ACA_CharacterBase::BaseStrengthChanged(const FOnAttributeChangeData& Data)
 {
+	const float Difference = Data.NewValue - Data.OldValue;
+	const float NewStrength = GetStrength();
+	SetStrength(NewStrength + Difference);
 }
 
 void ACA_CharacterBase::StrengthChanged(const FOnAttributeChangeData& Data)
 {
+	SetPhysicalDamage(GetStrength() * 0.2);
+	SetPhysicalResistance(GetStrength() / 100);
 }
 
 void ACA_CharacterBase::BaseIntelligenceChanged(const FOnAttributeChangeData& Data)
 {
+	const float Difference = Data.NewValue - Data.OldValue;
+	const float NewIntelligence = GetIntelligence();
+	SetIntelligence(NewIntelligence + Difference);
 }
 
 void ACA_CharacterBase::IntelligenceChanged(const FOnAttributeChangeData& Data)
 {
+	SetMagicalDamage(GetIntelligence() * 0.2);
+	SetMagicalResistance(GetIntelligence() / 100);
 }
 
 void ACA_CharacterBase::BaseAgilityChanged(const FOnAttributeChangeData& Data)
 {
+	const float Difference = Data.NewValue - Data.OldValue;
+	const float NewAgility = GetAgility();
+	SetAgility(NewAgility + Difference);
 }
 
 void ACA_CharacterBase::AgilityChanged(const FOnAttributeChangeData& Data)
 {
+	SetMoveSpeed(1 + (GetAgility() / 1000));
+	SetJumpHeight(1 + (GetAgility() / 1000));
 }
 
 void ACA_CharacterBase::BaseEnduranceChanged(const FOnAttributeChangeData& Data)
 {
+	const float Difference = Data.NewValue - Data.OldValue;
+	const float NewEndurance = GetEndurance();
+	SetEndurance(NewEndurance + Difference);
 }
 
 void ACA_CharacterBase::EnduranceChanged(const FOnAttributeChangeData& Data)
 {
+	SetMaxStamina(GetEndurance() * 1.2); // TODO maybe change this formula
 }
 
 void ACA_CharacterBase::CharacterLevelChanged(const FOnAttributeChangeData& Data)
 {
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Level = %f"), GetCharacterLevel()));
 }
 #pragma endregion

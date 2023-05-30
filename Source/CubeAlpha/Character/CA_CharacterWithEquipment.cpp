@@ -29,5 +29,11 @@ void ACA_CharacterWithEquipment::UpdateAttributes() const
 	SetIntelligence(GetBaseIntelligence() + CharacterEquipment->GetTotalIntelligence());
 	SetAgility(GetBaseAgility() * CharacterEquipment->GetTotalAgility());
 	SetEndurance(GetBaseEndurance() + CharacterEquipment->GetTotalEndurance());
-	SetDefense(CharacterEquipment->GetTotalStrength());
+	SetDefense(CharacterEquipment->GetTotalDefense());
+
+	//This part override the changes covered by the CharacterBase
+	SetPhysicalDamage((GetStrength() * 0.2) + CharacterEquipment->GetTotalPhysicalDamage());
+	SetMagicalDamage((GetIntelligence() * 0.2) + CharacterEquipment->GetTotalMagicalDamage());
+	SetPhysicalResistance((GetStrength() / 100) + CharacterEquipment->GetTotalPhysicalResistance());
+	SetMagicalResistance((GetIntelligence() / 100) + CharacterEquipment->GetTotalMagicalResistance());
 }

@@ -6,6 +6,7 @@ UCA_GearItem::UCA_GearItem()
 	MaxStackSize = 1;
 }
 
+#pragma region GettersSetters
 EEquipmentSlot UCA_GearItem::GetEquipmentSlot() const
 {
 	return EquipmentSlot;
@@ -95,3 +96,44 @@ void UCA_GearItem::SetEndurance(const int32 NewEndurance)
 {
 	Endurance = NewEndurance;
 }
+
+int32 UCA_GearItem::GetPhysicalDamage() const
+{
+	return PhysicalDamage;
+}
+
+void UCA_GearItem::SetPhysicalDamage(const int32 NewPhysicalDamage)
+{
+	PhysicalDamage = NewPhysicalDamage;
+}
+
+int32 UCA_GearItem::GetMagicalDamage() const
+{
+	return MagicalDamage;
+}
+
+void UCA_GearItem::SetMagicalDamage(const int32 NewMagicalDamage)
+{
+	MagicalDamage = NewMagicalDamage;
+}
+
+int32 UCA_GearItem::GetPhysicalResistance() const
+{
+	return PhysicalResistance;
+}
+
+void UCA_GearItem::SetPhysicalResistance(const int32 NewPhysicalResistance)
+{
+	PhysicalResistance = NewPhysicalResistance;
+}
+
+int32 UCA_GearItem::GetMagicalResistance() const
+{
+	return MagicalResistance;
+}
+
+void UCA_GearItem::SetMagicalResistance(const int32 NewMagicalResistance)
+{
+	MagicalResistance = NewMagicalResistance;
+}
+#pragma endregion
