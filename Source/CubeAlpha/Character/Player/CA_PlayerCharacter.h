@@ -84,6 +84,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Player|Experience")
 		UCA_ExperienceAttributeSet* ExperienceAttributeSet;
 
+	FDelegateHandle ExperienceChangedDelegateHandle;
+	FDelegateHandle MaxExperienceChangedDelegateHandle;
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetExperience() const;
@@ -93,6 +96,15 @@ public:
 	float GetMaxExperience() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	void SetMaxExperience(const float& NewMaxExperience) const;
+
+	virtual void ExperienceChanged(const FOnAttributeChangeData& Data);
+	virtual void MaxExperienceChanged(const FOnAttributeChangeData& Data);
+
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+		void LevelUp() const;
+
+	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
+		void LevelUpStats() const;
 #pragma endregion
 
 };

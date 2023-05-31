@@ -1,5 +1,6 @@
 #include "Character/Player/CA_PlayerCharacter.h"
 #include "CA_AbilitySystemComponent.h"
+#include "CubeAlphaStatsRow.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
@@ -107,6 +108,12 @@ void ACA_PlayerCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(PlayerMappingContext, 0);
 		}
+	}
+
+	if(AbilitySystemComponent)
+	{
+		ExperienceChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ExperienceAttributeSet->GetExperienceAttribute()).AddUObject(this, &ACA_PlayerCharacter::ExperienceChanged);
+		MaxExperienceChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ExperienceAttributeSet->GetMaxExperienceAttribute()).AddUObject(this, &ACA_PlayerCharacter::MaxExperienceChanged);
 	}
 }
 
@@ -218,5 +225,47 @@ float ACA_PlayerCharacter::GetMaxExperience() const
 void ACA_PlayerCharacter::SetMaxExperience(const float& NewMaxExperience) const
 {
 	ExperienceAttributeSet->SetMaxExperience(NewMaxExperience);
+}
+
+void ACA_PlayerCharacter::ExperienceChanged(const FOnAttributeChangeData& Data)
+{
+	if(Data.NewValue >= GetMaxExperience())
+	{
+		const float Diff = Data.NewValue - GetMaxExperience();
+		LevelUp();
+		SetExperience(Diff);
+	}
+}
+
+void ACA_PlayerCharacter::MaxExperienceChanged(const FOnAttributeChangeData& Data)
+{
+}
+
+void ACA_PlayerCharacter::LevelUp() const
+{
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Level Up!"));
+	}
+	if (GetCharacterLevel() < 10) { // TODO upgrade data table, Cap at 10 for now
+		const float NewLevel = GetCharacterLevel() + 1;
+		SetCharacterLevel(NewLevel);
+		LevelUpStats();
+	}
+}
+
+void ACA_PlayerCharacter::LevelUpStats() const
+{
+	const FString ContextString;
+	if (const FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), GetCharacterLevel())), ContextString))
+	{
+		SetBaseVitality(StatsRow->Vitality);
+		SetBaseStrength(StatsRow->Strength);
+		SetBaseIntelligence(StatsRow->Intelligence);
+		SetBaseAgility(StatsRow->Agility);
+		SetBaseEndurance(StatsRow->Endurance);
+		SetMaxExperience(StatsRow->ExperienceToNextLevel);
+	}
+	SetHealth(GetMaxHealth());
+	SetStamina(GetMaxStamina());
 }
 #pragma endregion

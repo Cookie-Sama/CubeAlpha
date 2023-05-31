@@ -666,35 +666,6 @@ void ACA_CharacterBase::SetCharacterLevel(const float& NewLevel) const
 }
 #pragma endregion
 
-void ACA_CharacterBase::LevelUp() const
-{
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Level Up!"));
-	}
-	if (GetCharacterLevel() < 10) { // TODO upgrade data table, Cap at 10 for now
-		const float NewLevel = GetCharacterLevel() + 1;
-		SetCharacterLevel(NewLevel);
-		UpdateStats(true);
-	}
-}
-
-void ACA_CharacterBase::UpdateStats(const bool bLevelUp) const
-{
-	if (bLevelUp) {
-		const FString ContextString;
-		if (const FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), GetCharacterLevel())), ContextString))
-		{
-			SetBaseVitality(StatsRow->Vitality);
-			SetBaseStrength(StatsRow->Strength);
-			SetBaseIntelligence(StatsRow->Intelligence);
-			SetBaseAgility(StatsRow->Agility);
-			SetBaseEndurance(StatsRow->Endurance);
-		}
-		SetHealth(GetMaxHealth());
-		SetStamina(GetMaxStamina());
-	}
-}
-
 void ACA_CharacterBase::RegenHealth() const
 {
 	if (GetHealth() < GetMaxHealth())

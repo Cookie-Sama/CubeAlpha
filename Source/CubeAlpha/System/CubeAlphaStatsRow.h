@@ -39,6 +39,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Endurance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 ExperienceToNextLevel;
+
 	FCA_StatsRow()
 		: Level(0)
 		, Vitality(0.0f)
@@ -46,5 +49,6 @@ public:
 		, Intelligence(0.0f)
 		, Agility(0.0f)
 		, Endurance(0.0f)
+	    , ExperienceToNextLevel(0)
 	{}
 };
