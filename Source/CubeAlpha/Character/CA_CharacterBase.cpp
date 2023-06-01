@@ -703,6 +703,7 @@ void ACA_CharacterBase::HealthChanged(const FOnAttributeChangeData& Data)
 	{
 		Die();
 	}
+	OnHealthChanged.Broadcast(GetHealth(), GetMaxHealth());
 }
 
 void ACA_CharacterBase::MaxHealthChanged(const FOnAttributeChangeData& Data)

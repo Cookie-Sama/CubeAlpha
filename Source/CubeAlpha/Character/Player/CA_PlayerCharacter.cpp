@@ -116,6 +116,7 @@ void ACA_PlayerCharacter::BeginPlay()
 		ExperienceChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ExperienceAttributeSet->GetExperienceAttribute()).AddUObject(this, &ACA_PlayerCharacter::ExperienceChanged);
 		MaxExperienceChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ExperienceAttributeSet->GetMaxExperienceAttribute()).AddUObject(this, &ACA_PlayerCharacter::MaxExperienceChanged);
 	}
+
 }
 
 FTransform ACA_PlayerCharacter::GetProjectileTransforms(FName Socket) const

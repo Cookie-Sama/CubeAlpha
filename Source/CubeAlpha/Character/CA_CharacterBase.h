@@ -15,6 +15,7 @@
 #include "CA_CharacterBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, ACA_CharacterBase*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedDelegate, float, Health, float, MaxHealth);
 
 UCLASS()
 class CUBEALPHA_API ACA_CharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -24,6 +25,9 @@ class CUBEALPHA_API ACA_CharacterBase : public ACharacter, public IAbilitySystem
 public:
 	// Sets default values for this character's properties
 	ACA_CharacterBase(const class FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(BluePrintAssignable, Category = "Events")
+	FOnHealthChangedDelegate OnHealthChanged;
 
 #pragma region DeathMechanic
 	UPROPERTY(BlueprintAssignable, Category = "CubeAlpha|Character")
