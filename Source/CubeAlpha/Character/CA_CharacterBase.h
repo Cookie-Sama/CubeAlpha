@@ -192,7 +192,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
-	void SetHealth(const float &NewHealth) const;
+	void SetHealth(float NewHealth) const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")

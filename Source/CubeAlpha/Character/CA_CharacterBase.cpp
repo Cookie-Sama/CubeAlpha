@@ -403,10 +403,14 @@ float ACA_CharacterBase::GetHealth() const
 	return 0.0f;
 }
 
-void ACA_CharacterBase::SetHealth(const float& NewHealth) const
+void ACA_CharacterBase::SetHealth(float NewHealth) const
 {
 	if (HealthAttributeSet) {
 		HealthAttributeSet->SetHealth(NewHealth);
+		if(GetHealth()>GetMaxHealth())
+		{
+			SetHealth(GetMaxHealth());
+		}
 	}
 }
 
