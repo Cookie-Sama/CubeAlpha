@@ -15,7 +15,8 @@
 #include "CA_CharacterBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, ACA_CharacterBase*, Character);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedDelegate, float, Health, float, MaxHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSimpleAttributeChangedDelegate, float, Value); // For attribute change 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnVariableAttributeChangedDelegate, float, Value, float, MaxValue); // For attribute change with a Max Value
 
 UCLASS()
 class CUBEALPHA_API ACA_CharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -27,7 +28,10 @@ public:
 	ACA_CharacterBase(const class FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(BluePrintAssignable, Category = "Events")
-	FOnHealthChangedDelegate OnHealthChanged;
+		FOnVariableAttributeChangedDelegate OnHealthChanged;
+
+	UPROPERTY(BluePrintAssignable, Category = "Events")
+		FOnVariableAttributeChangedDelegate OnMaxHealthChanged;
 
 #pragma region DeathMechanic
 	UPROPERTY(BlueprintAssignable, Category = "CubeAlpha|Character")
@@ -196,7 +200,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
-	void SetMaxHealth(const float &NewMaxHealth) const;
+	void SetMaxHealth(float NewMaxHealth) const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetHealthRegen() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")

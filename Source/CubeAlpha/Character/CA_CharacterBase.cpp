@@ -422,7 +422,7 @@ float ACA_CharacterBase::GetMaxHealth() const
 	return 0.0f;
 }
 
-void ACA_CharacterBase::SetMaxHealth(const float& NewMaxHealth) const
+void ACA_CharacterBase::SetMaxHealth(float NewMaxHealth) const
 {
 	if (HealthAttributeSet) {
 		HealthAttributeSet->SetMaxHealth(NewMaxHealth);
@@ -712,6 +712,7 @@ void ACA_CharacterBase::HealthChanged(const FOnAttributeChangeData& Data)
 
 void ACA_CharacterBase::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
+	OnMaxHealthChanged.Broadcast(GetHealth(), GetMaxHealth());
 }
 
 void ACA_CharacterBase::HealthRegenChanged(const FOnAttributeChangeData& Data)
