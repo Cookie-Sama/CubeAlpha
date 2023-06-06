@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "CA_ExperienceAttributeSet.h"
 #include "CA_HUD.h"
 
 ACA_PlayerCharacter::ACA_PlayerCharacter(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -41,6 +42,8 @@ ACA_PlayerCharacter::ACA_PlayerCharacter(const class FObjectInitializer& ObjectI
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	ExperienceAttributeSet = CreateDefaultSubobject<UCA_ExperienceAttributeSet>("Experience Attribute Set");
 }
 
 void ACA_PlayerCharacter::Move(const FInputActionValue& Value)
@@ -214,7 +217,7 @@ float ACA_PlayerCharacter::GetExperience() const
 	return ExperienceAttributeSet->GetExperience();
 }
 
-void ACA_PlayerCharacter::SetExperience(const float& NewExperience) const
+void ACA_PlayerCharacter::SetExperience(float NewExperience) const
 {
 	ExperienceAttributeSet->SetExperience(NewExperience);
 }
@@ -224,7 +227,7 @@ float ACA_PlayerCharacter::GetMaxExperience() const
 	return ExperienceAttributeSet->GetMaxExperience();
 }
 
-void ACA_PlayerCharacter::SetMaxExperience(const float& NewMaxExperience) const
+void ACA_PlayerCharacter::SetMaxExperience(float NewMaxExperience) const
 {
 	ExperienceAttributeSet->SetMaxExperience(NewMaxExperience);
 }
@@ -237,10 +240,12 @@ void ACA_PlayerCharacter::ExperienceChanged(const FOnAttributeChangeData& Data)
 		LevelUp();
 		SetExperience(Diff);
 	}
+	OnExperienceChanged.Broadcast(GetExperience(), GetMaxExperience());
 }
 
 void ACA_PlayerCharacter::MaxExperienceChanged(const FOnAttributeChangeData& Data)
 {
+	OnMaxExperienceChanged.Broadcast(GetExperience(), GetMaxExperience());
 }
 
 void ACA_PlayerCharacter::LevelUp() const
@@ -257,7 +262,8 @@ void ACA_PlayerCharacter::LevelUp() const
 
 void ACA_PlayerCharacter::LevelUpStats() const
 {
-	const FString ContextString;
+	//TODO FIX ME
+	/*const FString ContextString;
 	if (const FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), GetCharacterLevel())), ContextString))
 	{
 		SetBaseVitality(StatsRow->Vitality);
@@ -266,7 +272,7 @@ void ACA_PlayerCharacter::LevelUpStats() const
 		SetBaseAgility(StatsRow->Agility);
 		SetBaseEndurance(StatsRow->Endurance);
 		SetMaxExperience(StatsRow->ExperienceToNextLevel);
-	}
+	}*/
 	SetHealth(GetMaxHealth());
 	SetStamina(GetMaxStamina());
 }

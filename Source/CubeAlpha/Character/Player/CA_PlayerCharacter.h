@@ -17,6 +17,12 @@ class CUBEALPHA_API ACA_PlayerCharacter : public ACA_CharacterWithEquipment
 
 	ACA_PlayerCharacter(const class FObjectInitializer& ObjectInitializer);
 
+	UPROPERTY(BluePrintAssignable, Category = "Events")
+		FOnVariableAttributeChangedDelegate OnExperienceChanged;
+
+	UPROPERTY(BluePrintAssignable, Category = "Events")
+		FOnVariableAttributeChangedDelegate OnMaxExperienceChanged;
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* PlayerMappingContext;
@@ -91,11 +97,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetExperience() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
-	void SetExperience(const float& NewExperience) const;
+	void SetExperience(float NewExperience) const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 	float GetMaxExperience() const;
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
-	void SetMaxExperience(const float& NewMaxExperience) const;
+	void SetMaxExperience(float NewMaxExperience) const;
 
 	virtual void ExperienceChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxExperienceChanged(const FOnAttributeChangeData& Data);
