@@ -20,7 +20,8 @@ enum class CA_AbilityID : uint8
 	Active1 UMETA(DisplayName = "Active1"),
 	Active2 UMETA(DisplayName = "Active2"),
 	Active3 UMETA(DisplayName = "Active3"),
-	Ultimate UMETA(DisplayName = "Ultimate")
+	Ultimate UMETA(DisplayName = "Ultimate"),
+	Movement UMETA(DisplayName = "Movement")
 };
 
 UENUM(BlueprintType)
