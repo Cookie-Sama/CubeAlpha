@@ -85,6 +85,18 @@ public:
 
 #pragma endregion
 
+private:
+	UPROPERTY(EditAnywhere, Category = "Data Asset")
+		float VitalityLevelMultiplier = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Data Asset")
+		float StrengthLevelMultiplier = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Data Asset")
+		float IntelligenceLevelMultiplier = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Data Asset")
+		float AgilityLevelMultiplier = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Data Asset")
+		float EnduranceLevelMultiplier = 1.0f;
+
 #pragma region Experience
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Player|Experience")
