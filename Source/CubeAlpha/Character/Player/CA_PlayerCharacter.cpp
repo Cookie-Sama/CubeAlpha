@@ -262,10 +262,13 @@ void ACA_PlayerCharacter::LevelUp() const
 
 void ACA_PlayerCharacter::LevelUpStats() const
 {
-	//TODO FIX ME
+	//TODO FIXME
 	/*const FString ContextString;
 	if (const FCA_StatsRow* StatsRow = StatsDataTable->FindRow<FCA_StatsRow>(FName(*FString::Printf(TEXT("%f"), GetCharacterLevel())), ContextString))
 	{
+		if (GEngine) {
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Dans la boucle"));
+		}
 		SetBaseVitality(StatsRow->Vitality);
 		SetBaseStrength(StatsRow->Strength);
 		SetBaseIntelligence(StatsRow->Intelligence);
