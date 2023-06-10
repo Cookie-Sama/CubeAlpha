@@ -277,12 +277,12 @@ void ACA_PlayerCharacter::LevelUpStats() const
 		SetMaxExperience(StatsRow->ExperienceToNextLevel);
 	}*/
 
-	SetBaseVitality(GetBaseVitality()*VitalityLevelMultiplier);
-	SetBaseStrength(GetBaseStrength()*StrengthLevelMultiplier);
-	SetBaseIntelligence(GetBaseIntelligence()*IntelligenceLevelMultiplier);
-	SetBaseAgility(GetBaseAgility()*AgilityLevelMultiplier);
-	SetBaseEndurance(GetBaseEndurance()*EnduranceLevelMultiplier);
-	SetMaxExperience(GetMaxExperience()*1.5);
+	SetBaseVitality(static_cast<int>(GetBaseVitality() * VitalityLevelMultiplier));
+	SetBaseStrength(static_cast<int>(GetBaseStrength()*StrengthLevelMultiplier));
+	SetBaseIntelligence(static_cast<int>(GetBaseIntelligence()*IntelligenceLevelMultiplier));
+	SetBaseAgility(static_cast<int>(GetBaseAgility()*AgilityLevelMultiplier));
+	SetBaseEndurance(static_cast<int>(GetBaseEndurance()*EnduranceLevelMultiplier));
+	SetMaxExperience(static_cast<int>(GetMaxExperience()*1.5));
 
 	SetHealth(GetMaxHealth());
 	SetStamina(GetMaxStamina());
