@@ -155,7 +155,7 @@ bool ACA_PlayerCharacter::GetCooldownRemainingForAbility(const FGameplayTag Abil
 {
 	FString CooldownTag = AbilityTag.ToString().Append(".OnCooldown");
 
-	FGameplayTagContainer tags;
+	FGameplayTagContainer tags; // Don't rename to Tags, hide a class member
 	tags.AddTag(FGameplayTag::RequestGameplayTag(FName(CooldownTag)));
 
 	return GetCooldownRemainingForTag(tags, OutTimeRemaining);
@@ -165,7 +165,7 @@ bool ACA_PlayerCharacter::GetCooldownDurationForAbility(const FGameplayTag Abili
 {
 	FString CooldownTag = AbilityTag.ToString().Append(".OnCooldown");
 
-	FGameplayTagContainer tags;
+	FGameplayTagContainer tags; // Don't rename to Tags, hide a class member
 	tags.AddTag(FGameplayTag::RequestGameplayTag(FName(CooldownTag)));
 
 	return GetCooldownDurationForTag(tags, OutDuration);
@@ -178,9 +178,8 @@ bool ACA_PlayerCharacter::GetCooldownRemainingForTag(const FGameplayTagContainer
 		OutTimeRemaining = 0.f;
 
 		FGameplayEffectQuery const Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTags);
-		TArray<float>  TimeRemaining = AbilitySystemComponent->GetActiveEffectsTimeRemaining(Query);
 
-		if (TimeRemaining.Num() > 0)
+		if (TArray<float> TimeRemaining = AbilitySystemComponent->GetActiveEffectsTimeRemaining(Query); TimeRemaining.Num() > 0)
 		{
 			OutTimeRemaining = TimeRemaining[0];
 			return true;
@@ -197,9 +196,8 @@ bool ACA_PlayerCharacter::GetCooldownDurationForTag(const FGameplayTagContainer 
 		OutDuration = 0.f;
 
 		FGameplayEffectQuery const Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTags);
-		TArray<float>  Duration = AbilitySystemComponent->GetActiveEffectsDuration(Query);
 
-		if (Duration.Num() > 0)
+		if (TArray<float> Duration = AbilitySystemComponent->GetActiveEffectsDuration(Query); Duration.Num() > 0)
 		{
 			OutDuration = Duration[0];
 			return true;

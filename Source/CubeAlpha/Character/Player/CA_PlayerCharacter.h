@@ -14,7 +14,7 @@ UCLASS()
 class CUBEALPHA_API ACA_PlayerCharacter : public ACA_CharacterWithEquipment
 {
 	GENERATED_BODY()
-
+public:
 	ACA_PlayerCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(BluePrintAssignable, Category = "Events")
@@ -50,7 +50,6 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// To add mapping context
 	virtual void BeginPlay() override;
 
 public:
@@ -85,7 +84,7 @@ public:
 
 #pragma endregion
 
-private:
+protected:
 	UPROPERTY(EditAnywhere, Category = "Data Asset")
 		float VitalityLevelMultiplier = 1.0f;
 	UPROPERTY(EditAnywhere, Category = "Data Asset")
@@ -98,7 +97,6 @@ private:
 		float EnduranceLevelMultiplier = 1.0f;
 
 #pragma region Experience
-protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "CubeAlpha|Player|Experience")
 		UCA_ExperienceAttributeSet* ExperienceAttributeSet;
 
@@ -118,11 +116,12 @@ public:
 	virtual void ExperienceChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxExperienceChanged(const FOnAttributeChangeData& Data);
 
+protected:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 		void LevelUp() const;
 
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
-		void LevelUpStats() const;
+		virtual void LevelUpStats() const;
 #pragma endregion
 
 };
