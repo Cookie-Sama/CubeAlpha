@@ -12,6 +12,11 @@ void UCA_GABasicRangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
                                               const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                               const FGameplayEventData* TriggerEventData)
 {
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+	}
+
 	const ACA_PlayerCharacter* Owner = Cast<ACA_PlayerCharacter>(ActorInfo->AvatarActor.Get());
 	FGameplayTagContainer Tags;
 	Tags.AddTag(FGameplayTag::RequestGameplayTag("Ability.Primary"));

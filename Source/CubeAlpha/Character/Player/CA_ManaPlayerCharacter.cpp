@@ -7,10 +7,16 @@ ACA_ManaPlayerCharacter::ACA_ManaPlayerCharacter(const FObjectInitializer& Objec
 
 void ACA_ManaPlayerCharacter::RegenMana() const
 {
-	if (GetMana() < GetMaxMana())
+	if (bIsManaDelayActive)
 	{
-		const float Mana = GetMana() + (GetManaRegen() * GetWorld()->GetDeltaSeconds());
-		SetMana(FMath::Min(Mana, GetMaxMana()));
+		return;
+	}
+	else {
+		if (GetMana() < GetMaxMana())
+		{
+			const float Mana = GetMana() + GetManaRegen();
+			SetMana(FMath::Min(Mana, GetMaxMana()));
+		}
 	}
 }
 
@@ -26,6 +32,12 @@ void ACA_ManaPlayerCharacter::BeginPlay()
 	}
 	SetMaxMana(100); // Max Mana will always be 100
 	SetMana(GetMaxMana());
+	SetManaRegen(5.0f);
+}
+
+void ACA_ManaPlayerCharacter::DisableManaDelay()
+{
+	bIsManaDelayActive = false;
 }
 
 float ACA_ManaPlayerCharacter::GetMana() const
@@ -61,6 +73,13 @@ void ACA_ManaPlayerCharacter::SetManaRegen(float NewManaRegen) const
 void ACA_ManaPlayerCharacter::ManaChanged(const FOnAttributeChangeData& Data)
 {
 	OnManaChanged.Broadcast(GetMana(), GetMaxMana());
+	if(Data.NewValue<Data.OldValue)
+	{
+		bIsManaDelayActive = true;
+
+		// Désactiver le délai après 2 secondes
+		GetWorldTimerManager().SetTimer(ManaDelayTimerHandle, this, &ACA_ManaPlayerCharacter::DisableManaDelay, 2.0f, false);
+	}
 }
 
 void ACA_ManaPlayerCharacter::MaxManaChanged(const FOnAttributeChangeData& Data)

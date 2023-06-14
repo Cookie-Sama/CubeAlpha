@@ -39,6 +39,9 @@ protected:
 	FDelegateHandle MaxManaChangedDelegateHandle;
 	FDelegateHandle ManaRegenChangedDelegateHandle;
 
+	bool bIsManaDelayActive;
+	FTimerHandle ManaDelayTimerHandle;
+	void DisableManaDelay();
 public:
 	UFUNCTION(BlueprintCallable, Category = "CubeAlpha|Character|Attributes")
 		float GetMana() const;

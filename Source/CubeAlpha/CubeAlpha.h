@@ -59,3 +59,13 @@ enum class EClassType : uint8
 	Summoner,
 	All
 };
+
+UENUM(BlueprintType)
+enum class EMagicElementType : uint8
+{
+	Fire,
+	Water,
+	Air,
+	Earth,
+	None
+};
