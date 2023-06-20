@@ -69,3 +69,13 @@ enum class EMagicElementType : uint8
 	Earth,
 	None
 };
+
+UENUM(BlueprintType)
+enum class EItemType : uint8
+{
+	Unknown,
+	Gear,
+	Consumable,
+	Material,
+	QuestItem
+};

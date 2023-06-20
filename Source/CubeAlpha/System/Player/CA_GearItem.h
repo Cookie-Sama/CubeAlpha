@@ -68,6 +68,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gear Item")
         int32 MagicalResistance;
 public:
+
 #pragma region GettersSetters
     UFUNCTION(BlueprintCallable, Category = "Gear Item")
         EEquipmentSlot GetEquipmentSlot() const;

@@ -2,8 +2,8 @@
 
 UCA_GearItem::UCA_GearItem()
 {
-	ItemType = EItemType::Gear;
-	MaxStackSize = 1;
+	ItemDataAsset->SetItemType(EItemType::Gear);
+	ItemDataAsset->SetMaxStackSize(1);
 }
 
 #pragma region GettersSetters
